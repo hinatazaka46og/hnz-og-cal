@@ -30,7 +30,7 @@
   --miho: #6fbfd9;
   --miho-light: #e8f6fb;
   --miho-text: #1a7a9a;
-  --kyoko: #707780;
+  --kyoko: #8a9099;
   --kyoko-light: #f0f2f5;
   --sky-bg: #dff0f7;
   --sky-mid: #b8dcea;
@@ -233,7 +233,12 @@ main {
 
 .sub-list { display: flex; flex-direction: column; gap: 12px; }
 .sub-item { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.sub-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.sub-color-bar {
+  display: flex; border-radius: 4px; overflow: hidden;
+  flex-shrink: 0; width: 28px; height: 18px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+.sub-color-bar span { flex: 1; display: block; }
 .sub-name { font-size: 13px; width: 96px; flex-shrink: 0; font-weight: 500; }
 .sub-btn {
   font-size: 11px; padding: 5px 20px; border-radius: 12px;
@@ -378,7 +383,89 @@ main {
 .fab-container.open .fab-icon span:nth-child(2) { opacity: 0; }
 .fab-container.open .fab-icon span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-.loading, .empty { text-align: center; padding: 60px 0; color: var(--text-soft); font-size: 14px; }
+/* ── OTHER MEMBERS TAB ── */
+.tab-others {
+  padding: 7px 18px;
+  border-radius: 20px;
+  border: 1.5px solid var(--text-soft);
+  font-size: 12px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s;
+  background: transparent;
+  color: var(--text-soft);
+  font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: 0.04em;
+}
+.tab-others:hover { background: var(--white); }
+
+/* ── OTHERS MODAL ── */
+.others-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,20,40,0.6); z-index: 300;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.others-overlay.show { display: flex; }
+.others-modal {
+  background: var(--white); border-radius: 16px;
+  width: 100%; max-width: 400px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  overflow: hidden; max-height: 90vh; overflow-y: auto;
+}
+.others-rainbow {
+  height: 6px;
+  background: linear-gradient(to right,#ffb3d1,#ffcc80,#fff176,#a5d6a7,#6fbfd9,#0234b3,#800080);
+}
+.others-body { padding: 20px 22px; }
+.others-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.others-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.others-close {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: none; background: #f0f4f8; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--text-soft); transition: background 0.15s;
+}
+.others-close:hover { background: var(--sky-mid); }
+.others-desc { font-size: 12px; color: var(--text-soft); line-height: 1.7; margin-bottom: 18px; }
+.others-gen {
+  margin-bottom: 14px;
+}
+.others-gen-title {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+}
+.others-gen-label {
+  font-size: 10px; font-weight: 700; color: var(--text-soft);
+  letter-spacing: 0.12em;
+}
+.others-gen-line { flex: 1; height: 1px; background: var(--border); }
+.others-member-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 4px; border-radius: 8px; transition: background 0.12s;
+}
+.others-member-row:hover { background: var(--sky-bg); }
+.others-color-bar {
+  display: flex; border-radius: 4px; overflow: hidden;
+  flex-shrink: 0; width: 24px; height: 16px;
+  box-shadow: 0 0 0 0.5px rgba(0,0,0,0.12);
+}
+.others-color-bar span { flex: 1; display: block; }
+.others-member-name { font-size: 13px; color: var(--text); flex: 1; }
+.others-link {
+  font-size: 11px; color: var(--miho-text);
+  text-decoration: none; border: 1px solid var(--sky-mid);
+  border-radius: 8px; padding: 3px 10px; white-space: nowrap;
+  transition: background 0.12s;
+}
+.others-link:hover { background: var(--miho-light); }
+.others-footer {
+  border-top: 1px solid var(--border); padding-top: 12px;
+  font-size: 12px; color: var(--text-soft); line-height: 1.7;
+  margin-top: 4px;
+}
+.others-ig { color: var(--miho-text); text-decoration: none; font-weight: 500; }
+.others-ig:hover { text-decoration: underline; }
 
 @media (max-width: 580px) {
   .site-title { font-size: 17px; }
@@ -412,6 +499,7 @@ main {
       <button class="tab" data-member="KUMI"><span class="tab-check">✓</span>佐々木久美</button>
       <button class="tab" data-member="KYOKO"><span class="tab-check">✓</span>齊藤京子</button>
       <button class="tab" data-member="MIHO"><span class="tab-check">✓</span>渡邉美穂</button>
+      <button class="tab-others" onclick="openOthers()">其他成員 ↗</button>
     </div>
   </div>
 </header>
@@ -426,24 +514,24 @@ main {
     <div class="panel-title">📅 訂閱日曆</div>
     <div class="sub-list">
       <div class="sub-item">
-        <div class="sub-dot" style="background:#0234b3"></div>
+        <div class="sub-color-bar"><span style="background:#0234b3"></span><span style="background:#0234b3"></span></div>
         <div class="sub-name">加藤史帆</div>
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=a0bac1c23774a0ca20fa13475a1ffd19106cdcab9f7aa74fe1af7b3a3217ee72%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#0234b3;border-color:#0234b3">查看 / 訂閱日曆</a>
       </div>
       <div class="sub-item">
-        <div class="sub-dot" style="background:#800080"></div>
+        <div class="sub-color-bar"><span style="background:#800080"></span><span style="background:#b0d0e8"></span></div>
         <div class="sub-name">佐々木久美</div>
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=1bb7b20d3c8ff16bc24f43f9ba9e01c99ac6e30440ebc6b11eca7cf5b2f8c18e%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#800080;border-color:#800080">查看 / 訂閱日曆</a>
       </div>
       <div class="sub-item">
-        <div class="sub-dot" style="background:#707780"></div>
+        <div class="sub-color-bar" style="box-shadow:0 0 0 1px #ccc"><span style="background:#ffffff"></span><span style="background:#ffffff"></span></div>
         <div class="sub-name">齊藤京子</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=ecb6f0c79530e20fb6bacaec5b6bdd8cc90a13628540ccd4e6a3b0a0f8f4da83%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#707780;border-color:#707780">查看 / 訂閱日曆</a>
+        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=ecb6f0c79530e20fb6bacaec5b6bdd8cc90a13628540ccd4e6a3b0a0f8f4da83%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#8a9099;border-color:#8a9099">查看 / 訂閱日曆</a>
       </div>
       <div class="sub-item">
-        <div class="sub-dot" style="background:#6fbfd9"></div>
+        <div class="sub-color-bar"><span style="background:#b0d0e8"></span><span style="background:#b0d0e8"></span></div>
         <div class="sub-name">渡邉美穂</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#1a7a9a;border-color:#6fbfd9">查看 / 訂閱日曆</a>
+        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#1a7a9a;border-color:#b0d0e8">查看 / 訂閱日曆</a>
       </div>
     </div>
   </div>
@@ -529,7 +617,7 @@ const MEMBER_INFO = {
   SHIHO: { name:'加藤史帆',    color:'#0234b3', light:'#e8eaf6', textColor:'#0234b3' },
   KUMI:  { name:'佐々木久美',  color:'#800080', light:'#f5e5f5', textColor:'#800080' },
   MIHO:  { name:'渡邉美穂',   color:'#6fbfd9', light:'#e8f6fb', textColor:'#1a7a9a' },
-  KYOKO: { name:'齊藤京子',   color:'#707780', light:'#f0f2f5', textColor:'#40454c' },
+  KYOKO: { name:'齊藤京子',   color:'#8a9099', light:'#f0f2f5', textColor:'#40454c' },
 };
 
 let allEvents = [];
@@ -624,42 +712,43 @@ function getOutFiltered() { if (outSelected.has('all')) return allEvents; return
 function getOutLabel() { if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂'; return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・'); }
 
 function getRangeEvents() {
-  const range = document.getElementById('output-range').value; 
-  const now = new Date(); 
+  const range = document.getElementById('output-range').value;
+  const now = new Date();
+  const today = new Date(now); today.setHours(0,0,0,0);
   let start, end;
 
   if (range === 'sevenDays') {
-    start = new Date(now);
-    start.setHours(0,0,0,0);
-    end = new Date(now);
-    end.setDate(now.getDate() + 6);
-    end.setHours(23,59,59,999);
+    start = new Date(today);
+    end = new Date(today); end.setDate(today.getDate()+6); end.setHours(23,59,59,999);
+  } else if (range === 'week') {
+    start = new Date(now); start.setDate(now.getDate()-now.getDay()); start.setHours(0,0,0,0);
+    end = new Date(start); end.setDate(start.getDate()+6); end.setHours(23,59,59,999);
+  } else if (range === 'twoweeks') {
+    start = new Date(today);
+    end = new Date(today); end.setDate(today.getDate()+13); end.setHours(23,59,59,999);
+  } else if (range === 'month') {
+    start = new Date(now.getFullYear(), now.getMonth(), 1);
+    end = new Date(now.getFullYear(), now.getMonth()+1, 0, 23,59,59);
+  } else {
+    start = new Date(now.getFullYear(), now.getMonth()+1, 1);
+    end = new Date(now.getFullYear(), now.getMonth()+2, 0, 23,59,59);
   }
-  else if (range === 'week') { 
-    start = new Date(now); 
-    start.setDate(now.getDate()-now.getDay()); 
-    start.setHours(0,0,0,0); 
-    end = new Date(start); 
-    end.setDate(start.getDate()+6); 
-    end.setHours(23,59,59,999); 
+
+  // 近七天和近兩週從今天起算，本週/本月顯示完整範圍
+  const filterFrom = (range === 'sevenDays' || range === 'twoweeks') ? today : start;
+  return getOutFiltered()
+    .filter(e => e._date && e._date >= filterFrom && e._date >= start && e._date <= end)
+    .sort((a,b) => a._date-b._date || (a.time||'').localeCompare(b.time||''));
+}
+
+function openOthers() {
+  document.getElementById('others-overlay').classList.add('show');
+}
+
+function closeOthers(e) {
+  if (e.target === document.getElementById('others-overlay')) {
+    document.getElementById('others-overlay').classList.remove('show');
   }
-  else if (range === 'twoweeks') { 
-    start = new Date(now); 
-    start.setHours(0,0,0,0); 
-    end = new Date(now); 
-    end.setDate(now.getDate()+13); 
-    end.setHours(23,59,59,999); 
-  }
-  else if (range === 'month') { 
-    start = new Date(now.getFullYear(), now.getMonth(), 1); 
-    end = new Date(now.getFullYear(), now.getMonth()+1, 0, 23,59,59); 
-  }
-  else { 
-    start = new Date(now.getFullYear(), now.getMonth()+1, 1); 
-    end = new Date(now.getFullYear(), now.getMonth()+2, 0, 23,59,59); 
-  }
-  
-  return getOutFiltered().filter(e => e._date && e._date >= start && e._date <= end).sort((a,b) => a._date-b._date || (a.time||'').localeCompare(b.time||''));
 }
 
 function getRangeLabel() { 
@@ -883,6 +972,66 @@ async function init() {
 }
 init();
 </script>
+
+<!-- Others Modal -->
+<div class="others-overlay" id="others-overlay" onclick="closeOthers(event)">
+  <div class="others-modal">
+    <div class="others-rainbow"></div>
+    <div class="others-body">
+      <div class="others-header">
+        <span class="others-title">其他成員</span>
+        <button class="others-close" onclick="document.getElementById('others-overlay').classList.remove('show')">✕</button>
+      </div>
+      <p class="others-desc">以下成員的個人官網已提供完整行程資訊，可直接前往查詢：</p>
+
+      <!-- 一期生 -->
+      <div class="others-gen">
+        <div class="others-gen-title">
+          <span class="others-gen-label">一期生</span>
+          <div class="others-gen-line"></div>
+        </div>
+        <div class="others-member-row">
+          <div class="others-color-bar"><span style="background:#800080"></span><span style="background:#f1c40f"></span></div>
+          <span class="others-member-name">潮紗理菜</span>
+          <a class="others-link" href="https://ushiosarina.com/contents/schedule" target="_blank">官網行程 ↗</a>
+        </div>
+        <div class="others-member-row">
+          <div class="others-color-bar"><span style="background:#e33827"></span><span style="background:#e33827"></span></div>
+          <span class="others-member-name">影山優佳</span>
+          <a class="others-link" href="https://kageyamayuka.com/schedule" target="_blank">官網行程 ↗</a>
+        </div>
+      </div>
+
+      <!-- 二期生 -->
+      <div class="others-gen">
+        <div class="others-gen-title">
+          <span class="others-gen-label">二期生</span>
+          <div class="others-gen-line"></div>
+        </div>
+        <div class="others-member-row">
+          <div class="others-color-bar"><span style="background:#f39c12"></span><span style="background:#f39c12"></span></div>
+          <span class="others-member-name">丹生明里</span>
+          <a class="others-link" href="https://akarinibu.com/s/an/media/list?ima=0522&dy" target="_blank">官網行程 ↗</a>
+        </div>
+        <div class="others-member-row">
+          <div class="others-color-bar"><span style="background:#ff6b9d"></span><span style="background:#7ec8a0"></span></div>
+          <span class="others-member-name">松田好花</span>
+          <a class="others-link" href="https://konokamatsuda-official.com/s/sf2/media/list?ima=5342" target="_blank">官網行程 ↗</a>
+        </div>
+        <div class="others-member-row">
+          <div class="others-color-bar"><span style="background:#800080"></span><span style="background:#800080"></span></div>
+          <span class="others-member-name">富田鈴花</span>
+          <a class="others-link" href="https://suzukatomita-official.bitfan.id/schedules/menu/162142" target="_blank">官網行程 ↗</a>
+        </div>
+      </div>
+
+      <div class="others-footer">
+        如有希望新增的成員，歡迎聯繫
+        <a class="others-ig" href="https://www.instagram.com/tingco_hoshi" target="_blank">@tingco_hoshi</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer>
   <div class="footer-inner">
