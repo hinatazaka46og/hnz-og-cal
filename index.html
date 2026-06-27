@@ -13,11 +13,14 @@
 <link rel="apple-touch-icon" href="https://cdn.hinatazaka46.com/files/14/diary/official/member/poka_0419_2_fhw9fh9ewhfhee0wh90ehw0fewhw8e0he0.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#dff0f7">
-<!-- 後續維持原樣... -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- 修正 1：補上實體 QR Code 生成必備的第三方庫 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
 :root {
   --shiho: #0234b3;
@@ -90,7 +93,6 @@ header {
   object-position: center top;
 }
 
-/* 網頁標題改回 Noto Serif JP，修正 image_e7ab80.png 提到的錯誤 */
 .site-title {
   font-family: 'Noto Serif JP', serif;
   font-size: 20px; font-weight: 700;
@@ -139,7 +141,7 @@ header {
 .tab[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
 
 .tab-check { display: none; font-size: 10px; margin-right: 3px; }
-.tab.active .tab-check { inline; }
+.tab.active .tab-check { display: inline; }
 
 /* ── MAIN ── */
 main {
@@ -422,7 +424,6 @@ main {
         <div class="sub-name">渡邉美穂</div>
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#1a7a9a;border-color:#6fbfd9">查看 / 訂閱日曆</a>
       </div>
-
     </div>
   </div>
 
@@ -476,7 +477,14 @@ main {
   </div>
 </div>
 
+<!-- 修正 3：加入供 qrcode.js 渲染圖片所需的隱藏暫存容器 -->
+<div id="qr-tmp" style="display:none;"></div>
+
 <script>
+// 修正 2：補上 Canvas 渲染中被呼叫卻未宣告的 SITE_URL 與 MINCHO 變數
+const SITE_URL = 'https://lightleakstw.github.io/hinatazaka-og-schedule';
+const MINCHO = "'Noto Serif JP', 'PMingLiU', 'MingLiU', serif";
+
 const SHEET_ID = '1G70fvNSynS6p2YBo_SNsU8w0tnU8SUAp3De21hRYMSQ';
 const SHEETS = ['MIHO','KUMI','SHIHO','KYOKO'];
 const WEEKDAYS = ['日','一','二','三','四','五','六'];
@@ -627,19 +635,16 @@ function drawCard(inRange, qrEl) {
   const BAND_H = 7, HEADER_H = 112, ROW_H = 72, FOOTER_H = 84;
   const H = BAND_H + HEADER_H + inRange.length * ROW_H + FOOTER_H;
 
-  // 2x for high DPI
   const SCALE = 2;
   canvas.width = W * SCALE; canvas.height = H * SCALE;
   canvas.style.width = '100%'; canvas.style.height = 'auto';
   const ctx = canvas.getContext('2d');
   ctx.scale(SCALE, SCALE);
 
-  // bg
   const bg = ctx.createLinearGradient(0,0,W,H);
   bg.addColorStop(0,'#e4f3f9'); bg.addColorStop(1,'#edf0ff');
   ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
 
-  // rainbow band
   const rainbow = ctx.createLinearGradient(0,0,W,0);
   rainbow.addColorStop(0,'#ffb3d1'); rainbow.addColorStop(0.16,'#ffcc80');
   rainbow.addColorStop(0.32,'#fff176'); rainbow.addColorStop(0.48,'#a5d6a7');
@@ -652,7 +657,6 @@ function drawCard(inRange, qrEl) {
 
   const Y0 = BAND_H;
 
-  // header — title
   const rangeLabel = getRangeLabel();
   const memberLabel = getOutLabel();
   const titleText = isSingle ? `${memberLabel}行程` : '日向坂OG行程';
@@ -660,7 +664,6 @@ function drawCard(inRange, qrEl) {
   ctx.font = `bold 30px ${MINCHO}`;
   ctx.fillText(titleText, PAD, Y0+50);
 
-  // header — subtitle
   const subtitleText = isSingle ? rangeLabel : `${rangeLabel}｜${memberLabel}`;
   ctx.font = '13px sans-serif'; ctx.fillStyle = '#5a7a8a';
   let sub = subtitleText;
@@ -671,13 +674,11 @@ function drawCard(inRange, qrEl) {
   ctx.strokeStyle = '#c0dcea'; ctx.lineWidth = 1.2;
   ctx.beginPath(); ctx.moveTo(PAD, Y0+86); ctx.lineTo(W-PAD, Y0+86); ctx.stroke();
 
-  // events
   let lastDate = '';
   inRange.forEach((e, i) => {
     const y = Y0 + HEADER_H + i * ROW_H;
     const info = MEMBER_INFO[e._member];
 
-    // alt row bg
     if (i % 2 === 0) {
       ctx.fillStyle = 'rgba(255,255,255,0.42)';
       ctx.beginPath();
@@ -686,40 +687,34 @@ function drawCard(inRange, qrEl) {
       ctx.fill();
     }
 
-    // left stripe
     ctx.fillStyle = info.color;
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(PAD-12, y+5, 4, ROW_H-10, 2);
     else ctx.rect(PAD-12, y+5, 4, ROW_H-10);
     ctx.fill();
 
-    // date label
     const ds = formatDate(e._date);
     if (ds !== lastDate) {
       ctx.fillStyle = '#3a5a6a'; ctx.font = 'bold 11px sans-serif';
       ctx.fillText('▸ '+ds, PAD-4, y+15); lastDate = ds;
     }
 
-    // member chip
     let chipEndX = PAD;
     if (!isSingle) {
       ctx.font = 'bold 10px sans-serif';
       const chipW = ctx.measureText(info.name).width + 20;
 
       if (e._member === 'KYOKO') {
-        // double border: outer
         ctx.strokeStyle = info.color; ctx.lineWidth = 2;
         ctx.beginPath();
         if (ctx.roundRect) ctx.roundRect(PAD-1, y+20, chipW+2, 20, 11);
         else ctx.rect(PAD-1, y+20, chipW+2, 20);
         ctx.stroke();
-        // fill
         ctx.fillStyle = info.light;
         ctx.beginPath();
         if (ctx.roundRect) ctx.roundRect(PAD+2, y+23, chipW-4, 14, 7);
         else ctx.rect(PAD+2, y+23, chipW-4, 14);
         ctx.fill();
-        // inner border
         ctx.strokeStyle = info.color; ctx.lineWidth = 0.8;
         ctx.beginPath();
         if (ctx.roundRect) ctx.roundRect(PAD+2, y+23, chipW-4, 14, 7);
@@ -737,7 +732,6 @@ function drawCard(inRange, qrEl) {
       chipEndX = PAD + chipW + 7;
     }
 
-    // category chip
     if (e.category) {
       ctx.font = '10px sans-serif';
       const catW = ctx.measureText(e.category).width + 14;
@@ -750,7 +744,6 @@ function drawCard(inRange, qrEl) {
       chipEndX += catW + 6;
     }
 
-    // time
     const t = formatTime(e.time);
     if (t) {
       ctx.fillStyle = '#5a7a8a'; ctx.font = 'bold 11px sans-serif';
@@ -758,7 +751,6 @@ function drawCard(inRange, qrEl) {
       ctx.fillText('⏰ '+t, W-PAD-tw-4, y+33);
     }
 
-    // title
     ctx.fillStyle = '#1a2a3a'; ctx.font = 'bold 14px sans-serif';
     let title = e.title;
     const maxW = W - PAD*2 - 20;
@@ -766,7 +758,6 @@ function drawCard(inRange, qrEl) {
     if (title !== e.title) title += '…';
     ctx.fillText(title, PAD, y+55);
 
-    // note
     if (e.note) {
       const titleW = ctx.measureText(title).width;
       ctx.fillStyle = '#8aaabb'; ctx.font = '11px sans-serif';
@@ -777,7 +768,6 @@ function drawCard(inRange, qrEl) {
     }
   });
 
-  // footer
   const footerY = Y0 + HEADER_H + inRange.length * ROW_H;
   ctx.strokeStyle = '#c0dcea'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(PAD, footerY+12); ctx.lineTo(W-PAD, footerY+12); ctx.stroke();
@@ -826,7 +816,6 @@ init();
 </footer>
 
 <style>
-/* 網頁底部改回 Noto Serif JP，修正 image_e7ab80.png 提到的錯誤 */
 footer { background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%); border-top: 1px solid var(--sky-mid); padding: 20px 24px; text-align: center; }
 .footer-inner { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .footer-lyric { font-family: 'Noto Serif JP', serif; font-size: 15px; color: var(--text-soft); letter-spacing: 0.15em; font-weight: 400; }
