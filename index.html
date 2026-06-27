@@ -242,6 +242,25 @@ main {
 }
 .sub-btn:hover { opacity: 0.7; }
 
+/* ── 🌟 新增：問卷區塊專用樣式 ── */
+.form-panel-box {
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f3ff 100%);
+  border: 1px dashed #a3c7f5;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.form-panel-text { font-size: 13px; line-height: 1.5; color: #2a4a73; }
+.form-panel-btn {
+  background: #0234b3; color: white; border: none; font-size: 12px; font-weight: 600;
+  padding: 8px 18px; border-radius: 20px; cursor: pointer; text-decoration: none;
+  transition: opacity 0.15s; white-space: nowrap;
+}
+.form-panel-btn:hover { opacity: 0.9; }
+
 .output-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
 
 .output-filter {
@@ -368,6 +387,8 @@ main {
   main { padding: 20px 12px 60px; }
   .panel { padding: 18px 16px; }
   .fab-main-btn { width: 50px; height: 50px; font-size: 18px; }
+  .form-panel-box { flex-direction: column; text-align: center; }
+  .form-panel-btn { width: 100%; }
 }
 </style>
 </head>
@@ -427,6 +448,18 @@ main {
     </div>
   </div>
 
+  <!-- 🌟 新增：最下方的行程投稿區塊 -->
+  <div class="panel" id="panel-contribute">
+    <div class="panel-title">✍️ 行程情報募集</div>
+    <div class="form-panel-box">
+      <div class="form-panel-text">
+        發現漏掉的 OG 行程了嗎？歡迎幫忙點選右側按鈕填寫投稿問卷！<br>
+        資料將自動歸類至後台，並於<strong>每日凌晨 1-2 點</strong>同步至日曆。
+      </div>
+      <a class="form-panel-btn" href="https://script.google.com/macros/s/AKfycbzaZyo9WelvV37XnSmQCh_cOeNqrs-MROEeoGs9nTfVAz3DtxQa602ZMb5w1RYZ3ppaTA/exec" target="_blank">📄 前往投稿行程</a>
+    </div>
+  </div>
+
   <!-- Output Panel -->
   <div class="panel" id="panel-output">
     <div class="panel-title">📋 輸出行程</div>
@@ -440,7 +473,7 @@ main {
     </div>
     <div class="output-controls">
       <select class="range-select" id="output-range">
-        <option value="sevenDays">近七天</option> <!-- 🌟 新增這一行 -->
+        <option value="sevenDays">近七天</option>
         <option value="week">本週</option>
         <option value="twoweeks">近兩週</option>
         <option value="month">本月</option>
@@ -456,9 +489,11 @@ main {
   </div>
 </main>
 
+<!-- 🌟 FAB 懸浮按鈕：已在 Menu 內新增「✍️ 投稿行程」按鈕，點擊直接另開分頁 -->
 <div class="fab-container" id="fab-container">
   <div class="fab-menu">
     <button class="fab-item" onclick="scrollToPanel('panel-subscribe')">📅 訂閱日曆</button>
+    <a class="fab-item" href="https://script.google.com/macros/s/AKfycbzaZyo9WelvV37XnSmQCh_cOeNqrs-MROEeoGs9nTfVAz3DtxQa602ZMb5w1RYZ3ppaTA/exec" target="_blank" style="text-decoration: none; color: var(--text);">✍️ 投稿行程</a>
     <button class="fab-item" onclick="scrollToPanel('panel-output')">📋 輸出行程</button>
   </div>
   <button class="fab-main-btn" onclick="toggleFabMenu(event)">
@@ -593,12 +628,11 @@ function getRangeEvents() {
   const now = new Date(); 
   let start, end;
 
-  // 🌟 新增：近七天的計算邏輯（從今天 00:00 到 第 7 天的 23:59）
   if (range === 'sevenDays') {
     start = new Date(now);
-    start.setHours(0,0,0,0); // 今天起點
+    start.setHours(0,0,0,0);
     end = new Date(now);
-    end.setDate(now.getDate() + 6); // 包含今天共 7 天
+    end.setDate(now.getDate() + 6);
     end.setHours(23,59,59,999);
   }
   else if (range === 'week') { 
@@ -628,10 +662,9 @@ function getRangeEvents() {
   return getOutFiltered().filter(e => e._date && e._date >= start && e._date <= end).sort((a,b) => a._date-b._date || (a.time||'').localeCompare(b.time||''));
 }
 
-// 🌟 別忘了這裡也要補上文字標籤，圖卡和文字輸出才不會抓不到名字
 function getRangeLabel() { 
   return { 
-    sevenDays: '近七天', // 🌟 新增這一行
+    sevenDays: '近七天',
     week: '本週', 
     twoweeks: '近兩週', 
     month: '本月', 
