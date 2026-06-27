@@ -478,7 +478,7 @@ main {
   .form-panel-btn { width: 100%; }
 }
 
-/* ── DAY BLOCK (同天合併) ── */
+/* ── DAY BLOCK ── */
 .day-block {
   background: var(--white);
   border-radius: var(--radius);
@@ -550,7 +550,7 @@ main {
       <div class="sub-item">
         <div class="sub-color-bar"><span style="background:#b0d0e8"></span><span style="background:#b0d0e8"></span></div>
         <div class="sub-name">渡邉美穂</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#7aaabf;border-color:#b0d0e8">查看 / 訂閱日曆</a>
+        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#1a7a9a;border-color:#b0d0e8">查看 / 訂閱日曆</a>
       </div>
     </div>
   </div>
@@ -699,13 +699,13 @@ document.querySelectorAll('.out-member-btn').forEach(btn => {
 });
 
 function mergeCoAppearances(events) {
-  // 找出同天、同標題、同時間的不同成員，合併成一筆
   const merged = [];
   const used = new Set();
   events.forEach((e, i) => {
     if (used.has(i)) return;
     const siblings = events.reduce((acc, e2, j) => {
       if (j !== i && !used.has(j) &&
+          e2._date && e._date &&
           e2._date.toDateString() === e._date.toDateString() &&
           e2.title === e.title &&
           (e2.time || '') === (e.time || '')) {
@@ -735,7 +735,6 @@ function renderSchedule() {
   const future = mergeCoAppearances(withDate.filter(e => e._date >= cutoff));
   const noDateMerged = mergeCoAppearances(noDate);
 
-  // 按日期分組
   const groups = {};
   future.forEach(e => {
     const k = e._date.toDateString();
@@ -750,7 +749,6 @@ function renderSchedule() {
     html += '<div class="section-label">近期行程</div>';
     Object.values(groups).forEach(group => {
       html += `<div class="date-group"><div class="date-header"><span class="date-main">${formatDate(group.date)}</span>${isToday(group.date) ? '<span class="date-today-badge">TODAY</span>' : ''}</div>`;
-      // 同一天合併成一個底色色塊
       html += '<div class="day-block">';
       group.events.forEach((e, idx) => {
         if (idx > 0) html += '<div class="day-divider"></div>';
@@ -761,7 +759,7 @@ function renderSchedule() {
   }
 
   if (noDateMerged.length > 0) {
-    html += '<div class="section-label">日期未定</div><div class="no-date-section">';
+    html += '<div class="section-label">日期未定</div><div class="no-date-section day-block">';
     noDateMerged.forEach((e, idx) => {
       if (idx > 0) html += '<div class="day-divider"></div>';
       html += renderCard(e, multiMember);
@@ -776,7 +774,6 @@ function renderCard(e, showMember) {
   const members = e._members || [e._member];
   const isSingle = members.length === 1;
 
-  // 左側色條：單人用成員色，共演用漸層
   let stripeStyle;
   if (isSingle) {
     stripeStyle = `background:${MEMBER_INFO[members[0]].color}`;
@@ -784,18 +781,17 @@ function renderCard(e, showMember) {
     const colors = members.map(m => MEMBER_INFO[m].color);
     const pct = 100 / colors.length;
     const stops = colors.map((c, i) => `${c} ${i*pct}%, ${c} ${(i+1)*pct}%`).join(', ');
-    stripeStyle = `background:linear-gradient(to bottom, ${stops})`;
+    stripeStyle = `background:linear-gradient(to bottom,${stops})`;
   }
 
-  // 成員膠囊
   let chipHtml = '';
   if (showMember) {
     chipHtml = members.map(m => {
       const info = MEMBER_INFO[m];
-      if (m === 'KYOKO') {
-        return `<span class="event-member-chip" style="background:${info.light};color:${info.color};outline:1.5px solid ${info.color};outline-offset:-1px">${info.name}</span>`;
-      }
-      return `<span class="event-member-chip" style="background:${info.light};color:${info.color}">${info.name}</span>`;
+      const kyokoStyle = m === 'KYOKO'
+        ? `style="background:${info.light};color:${info.color};outline:1.5px solid ${info.color};outline-offset:-1px"`
+        : `style="background:${info.light};color:${info.color}"`;
+      return `<span class="event-member-chip" ${kyokoStyle}>${info.name}</span>`;
     }).join('');
   }
 
@@ -813,7 +809,6 @@ function renderCard(e, showMember) {
     </div>
   </div>`;
 }
-
 
 function getOutFiltered() { if (outSelected.has('all')) return allEvents; return allEvents.filter(e => outSelected.has(e._member)); }
 function getOutLabel() { if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂'; return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・'); }
