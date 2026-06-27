@@ -440,6 +440,7 @@ main {
     </div>
     <div class="output-controls">
       <select class="range-select" id="output-range">
+        <option value="sevenDays">近七天</option> <!-- 🌟 新增這一行 -->
         <option value="week">本週</option>
         <option value="twoweeks">近兩週</option>
         <option value="month">本月</option>
@@ -585,16 +586,58 @@ function renderCard(e, showMember) {
 }
 
 function getOutFiltered() { if (outSelected.has('all')) return allEvents; return allEvents.filter(e => outSelected.has(e._member)); }
-function getOutLabel() { if (outSelected.has('all')) return '加藤史帆・佐々木久美・渡邉美穂'; return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・'); }
+function getOutLabel() { if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂'; return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・'); }
+
 function getRangeEvents() {
-  const range = document.getElementById('output-range').value; const now = new Date(); let start, end;
-  if (range === 'week') { start = new Date(now); start.setDate(now.getDate()-now.getDay()); start.setHours(0,0,0,0); end = new Date(start); end.setDate(start.getDate()+6); end.setHours(23,59,59,999); }
-  else if (range === 'twoweeks') { start = new Date(now); start.setHours(0,0,0,0); end = new Date(now); end.setDate(now.getDate()+13); end.setHours(23,59,59,999); }
-  else if (range === 'month') { start = new Date(now.getFullYear(), now.getMonth(), 1); end = new Date(now.getFullYear(), now.getMonth()+1, 0, 23,59,59); }
-  else { start = new Date(now.getFullYear(), now.getMonth()+1, 1); end = new Date(now.getFullYear(), now.getMonth()+2, 0, 23,59,59); }
+  const range = document.getElementById('output-range').value; 
+  const now = new Date(); 
+  let start, end;
+
+  // 🌟 新增：近七天的計算邏輯（從今天 00:00 到 第 7 天的 23:59）
+  if (range === 'sevenDays') {
+    start = new Date(now);
+    start.setHours(0,0,0,0); // 今天起點
+    end = new Date(now);
+    end.setDate(now.getDate() + 6); // 包含今天共 7 天
+    end.setHours(23,59,59,999);
+  }
+  else if (range === 'week') { 
+    start = new Date(now); 
+    start.setDate(now.getDate()-now.getDay()); 
+    start.setHours(0,0,0,0); 
+    end = new Date(start); 
+    end.setDate(start.getDate()+6); 
+    end.setHours(23,59,59,999); 
+  }
+  else if (range === 'twoweeks') { 
+    start = new Date(now); 
+    start.setHours(0,0,0,0); 
+    end = new Date(now); 
+    end.setDate(now.getDate()+13); 
+    end.setHours(23,59,59,999); 
+  }
+  else if (range === 'month') { 
+    start = new Date(now.getFullYear(), now.getMonth(), 1); 
+    end = new Date(now.getFullYear(), now.getMonth()+1, 0, 23,59,59); 
+  }
+  else { 
+    start = new Date(now.getFullYear(), now.getMonth()+1, 1); 
+    end = new Date(now.getFullYear(), now.getMonth()+2, 0, 23,59,59); 
+  }
+  
   return getOutFiltered().filter(e => e._date && e._date >= start && e._date <= end).sort((a,b) => a._date-b._date || (a.time||'').localeCompare(b.time||''));
 }
-function getRangeLabel() { return { week:'本週', twoweeks:'近兩週', month:'本月', nextmonth:'下月' }[document.getElementById('output-range').value]; }
+
+// 🌟 別忘了這裡也要補上文字標籤，圖卡和文字輸出才不會抓不到名字
+function getRangeLabel() { 
+  return { 
+    sevenDays: '近七天', // 🌟 新增這一行
+    week: '本週', 
+    twoweeks: '近兩週', 
+    month: '本月', 
+    nextmonth: '下月' 
+  }[document.getElementById('output-range').value]; 
+}
 
 function generateTextOutput() {
   const inRange = getRangeEvents(); const rangeLabel = getRangeLabel(); const memberLabel = getOutLabel(); const isSingle = !outSelected.has('all') && outSelected.size === 1;
