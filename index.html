@@ -477,6 +477,25 @@ main {
   .form-panel-box { flex-direction: column; text-align: center; }
   .form-panel-btn { width: 100%; }
 }
+
+/* ── DAY BLOCK (同天合併) ── */
+.day-block {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 8px rgba(111,191,217,0.12), 0 0 0 1px rgba(111,191,217,0.08);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.day-block .event-card {
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+.day-divider {
+  height: 1px;
+  background: var(--border);
+  margin-left: 4px;
+}
 </style>
 </head>
 <body>
@@ -531,7 +550,7 @@ main {
       <div class="sub-item">
         <div class="sub-color-bar"><span style="background:#b0d0e8"></span><span style="background:#b0d0e8"></span></div>
         <div class="sub-name">渡邉美穂</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#1a7a9a;border-color:#b0d0e8">查看 / 訂閱日曆</a>
+        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#7aaabf;border-color:#b0d0e8">查看 / 訂閱日曆</a>
       </div>
     </div>
   </div>
@@ -544,7 +563,7 @@ main {
         發現漏掉的 OG 行程了嗎？歡迎幫忙點選右側按鈕填寫投稿問卷！<br>
         資料將自動歸類至後台，並於<strong>每日凌晨 1-2 點</strong>同步至日曆。
       </div>
-      <a class="form-panel-btn" href="https://script.google.com/macros/s/AKfycbzaZyo9WelvV37XnSmQCh_cOeNqrs-MROEeoGs9nTfVAz3DtxQa602ZMb5w1RYZ3ppaTA/exec" target="_blank">📄 前往投稿行程</a>
+      <a class="form-panel-btn" href="https://script.google.com/macros/s/AKfycbzLiKxXRM0Ah06vPAW89zK303HfZbBMzSCQfed57nlFXi-DWLVmtB_m1ZAWJJr1GPui4g/exec" target="_blank">📄 前往投稿行程</a>
     </div>
   </div>
 
@@ -581,7 +600,7 @@ main {
 <div class="fab-container" id="fab-container">
   <div class="fab-menu">
     <button class="fab-item" onclick="scrollToPanel('panel-subscribe')">📅 訂閱日曆</button>
-    <a class="fab-item" href="https://script.google.com/macros/s/AKfycbzaZyo9WelvV37XnSmQCh_cOeNqrs-MROEeoGs9nTfVAz3DtxQa602ZMb5w1RYZ3ppaTA/exec" target="_blank" style="text-decoration: none; color: var(--text);">✍️ 投稿行程</a>
+    <a class="fab-item" href="https://script.google.com/macros/s/AKfycbzLiKxXRM0Ah06vPAW89zK303HfZbBMzSCQfed57nlFXi-DWLVmtB_m1ZAWJJr1GPui4g/exec" target="_blank" style="text-decoration: none; color: var(--text);">✍️ 投稿行程</a>
     <button class="fab-item" onclick="scrollToPanel('panel-output')">📋 輸出行程</button>
   </div>
   <button class="fab-main-btn" onclick="toggleFabMenu(event)">
@@ -679,34 +698,122 @@ document.querySelectorAll('.out-member-btn').forEach(btn => {
   });
 });
 
+function mergeCoAppearances(events) {
+  // 找出同天、同標題、同時間的不同成員，合併成一筆
+  const merged = [];
+  const used = new Set();
+  events.forEach((e, i) => {
+    if (used.has(i)) return;
+    const siblings = events.reduce((acc, e2, j) => {
+      if (j !== i && !used.has(j) &&
+          e2._date.toDateString() === e._date.toDateString() &&
+          e2.title === e.title &&
+          (e2.time || '') === (e.time || '')) {
+        acc.push(j);
+      }
+      return acc;
+    }, []);
+    if (siblings.length > 0) {
+      const members = [e._member, ...siblings.map(j => events[j]._member)];
+      merged.push({ ...e, _members: members });
+      siblings.forEach(j => used.add(j));
+    } else {
+      merged.push({ ...e, _members: [e._member] });
+    }
+    used.add(i);
+  });
+  return merged;
+}
+
 function renderSchedule() {
   const container = document.getElementById('schedule-container');
-  const filtered = getViewFiltered(); const multiMember = viewSelected.has('all') || viewSelected.size > 1;
+  const filtered = getViewFiltered();
+  const multiMember = viewSelected.has('all') || viewSelected.size > 1;
   const withDate = filtered.filter(e => e._date).sort((a,b) => a._date-b._date || (a.time||'').localeCompare(b.time||''));
   const noDate = filtered.filter(e => !e._date);
   const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-3); cutoff.setHours(0,0,0,0);
-  const future = withDate.filter(e => e._date >= cutoff);
+  const future = mergeCoAppearances(withDate.filter(e => e._date >= cutoff));
+  const noDateMerged = mergeCoAppearances(noDate);
+
+  // 按日期分組
   const groups = {};
-  future.forEach(e => { const k = e._date.toDateString(); if (!groups[k]) groups[k] = { date: e._date, events: [] }; groups[k].events.push(e); });
-  let html = ''; if (Object.keys(groups).length === 0 && noDate.length === 0) html = '<div class="empty">暫無行程資料</div>';
+  future.forEach(e => {
+    const k = e._date.toDateString();
+    if (!groups[k]) groups[k] = { date: e._date, events: [] };
+    groups[k].events.push(e);
+  });
+
+  let html = '';
+  if (Object.keys(groups).length === 0 && noDateMerged.length === 0) html = '<div class="empty">暫無行程資料</div>';
+
   if (Object.keys(groups).length > 0) {
     html += '<div class="section-label">近期行程</div>';
     Object.values(groups).forEach(group => {
       html += `<div class="date-group"><div class="date-header"><span class="date-main">${formatDate(group.date)}</span>${isToday(group.date) ? '<span class="date-today-badge">TODAY</span>' : ''}</div>`;
-      group.events.forEach(e => { html += renderCard(e, multiMember); }); html += '</div>';
+      // 同一天合併成一個底色色塊
+      html += '<div class="day-block">';
+      group.events.forEach((e, idx) => {
+        if (idx > 0) html += '<div class="day-divider"></div>';
+        html += renderCard(e, multiMember);
+      });
+      html += '</div></div>';
     });
   }
-  if (noDate.length > 0) {
+
+  if (noDateMerged.length > 0) {
     html += '<div class="section-label">日期未定</div><div class="no-date-section">';
-    noDate.forEach(e => { html += renderCard(e, multiMember); }); html += '</div>';
+    noDateMerged.forEach((e, idx) => {
+      if (idx > 0) html += '<div class="day-divider"></div>';
+      html += renderCard(e, multiMember);
+    });
+    html += '</div>';
   }
   container.innerHTML = html;
 }
 
 function renderCard(e, showMember) {
   const timeStr = formatTime(e.time);
-  return `<div class="event-card" data-member="${e._member}"><div class="event-stripe"></div><div class="event-inner"><div class="event-meta">${showMember ? `<span class="event-member-chip">${MEMBER_INFO[e._member].name}</span>` : ''}${e.category ? `<span class="event-category">${e.category}</span>` : ''}${timeStr ? `<span class="event-time">⏰ ${timeStr}</span>` : ''}</div><div class="event-title">${e.title}</div>${e.note ? `<div class="event-note">📝 ${e.note}</div>` : ''}${e.url ? `<a class="event-link" href="${e.url}" target="_blank">🔗 ${e.url}</a>` : ''}</div></div>`;
+  const members = e._members || [e._member];
+  const isSingle = members.length === 1;
+
+  // 左側色條：單人用成員色，共演用漸層
+  let stripeStyle;
+  if (isSingle) {
+    stripeStyle = `background:${MEMBER_INFO[members[0]].color}`;
+  } else {
+    const colors = members.map(m => MEMBER_INFO[m].color);
+    const pct = 100 / colors.length;
+    const stops = colors.map((c, i) => `${c} ${i*pct}%, ${c} ${(i+1)*pct}%`).join(', ');
+    stripeStyle = `background:linear-gradient(to bottom, ${stops})`;
+  }
+
+  // 成員膠囊
+  let chipHtml = '';
+  if (showMember) {
+    chipHtml = members.map(m => {
+      const info = MEMBER_INFO[m];
+      if (m === 'KYOKO') {
+        return `<span class="event-member-chip" style="background:${info.light};color:${info.color};outline:1.5px solid ${info.color};outline-offset:-1px">${info.name}</span>`;
+      }
+      return `<span class="event-member-chip" style="background:${info.light};color:${info.color}">${info.name}</span>`;
+    }).join('');
+  }
+
+  return `<div class="event-card" data-member="${members[0]}">
+    <div class="event-stripe" style="${stripeStyle}"></div>
+    <div class="event-inner">
+      <div class="event-meta">
+        ${chipHtml}
+        ${e.category ? `<span class="event-category">${e.category}</span>` : ''}
+        ${timeStr ? `<span class="event-time">⏰ ${timeStr}</span>` : ''}
+      </div>
+      <div class="event-title">${e.title}</div>
+      ${e.note ? `<div class="event-note">📝 ${e.note}</div>` : ''}
+      ${e.url ? `<a class="event-link" href="${e.url}" target="_blank">🔗 ${e.url}</a>` : ''}
+    </div>
+  </div>`;
 }
+
 
 function getOutFiltered() { if (outSelected.has('all')) return allEvents; return allEvents.filter(e => outSelected.has(e._member)); }
 function getOutLabel() { if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂'; return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・'); }
