@@ -732,8 +732,7 @@ function renderSchedule() {
   const withDate = filtered.filter(e => e._date).sort((a,b) => a._date-b._date || (a.time||'').localeCompare(b.time||''));
   const noDate = filtered.filter(e => !e._date);
   const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-3); cutoff.setHours(0,0,0,0);
-  const future = mergeCoAppearances(withDate.filter(e => e._date >= cutoff));
-  const noDateMerged = mergeCoAppearances(noDate);
+  const future = withDate.filter(e => e._date >= cutoff);
 
   const groups = {};
   future.forEach(e => {
@@ -743,27 +742,20 @@ function renderSchedule() {
   });
 
   let html = '';
-  if (Object.keys(groups).length === 0 && noDateMerged.length === 0) html = '<div class="empty">暫無行程資料</div>';
+  if (Object.keys(groups).length === 0 && noDate.length === 0) html = '<div class="empty">暫無行程資料</div>';
 
   if (Object.keys(groups).length > 0) {
     html += '<div class="section-label">近期行程</div>';
     Object.values(groups).forEach(group => {
       html += `<div class="date-group"><div class="date-header"><span class="date-main">${formatDate(group.date)}</span>${isToday(group.date) ? '<span class="date-today-badge">TODAY</span>' : ''}</div>`;
-      html += '<div class="day-block">';
-      group.events.forEach((e, idx) => {
-        if (idx > 0) html += '<div class="day-divider"></div>';
-        html += renderCard(e, multiMember);
-      });
-      html += '</div></div>';
+      group.events.forEach(e => { html += renderCard(e, multiMember); });
+      html += '</div>';
     });
   }
 
-  if (noDateMerged.length > 0) {
-    html += '<div class="section-label">日期未定</div><div class="no-date-section day-block">';
-    noDateMerged.forEach((e, idx) => {
-      if (idx > 0) html += '<div class="day-divider"></div>';
-      html += renderCard(e, multiMember);
-    });
+  if (noDate.length > 0) {
+    html += '<div class="section-label">日期未定</div><div class="no-date-section">';
+    noDate.forEach(e => { html += renderCard(e, multiMember); });
     html += '</div>';
   }
   container.innerHTML = html;
@@ -771,35 +763,15 @@ function renderSchedule() {
 
 function renderCard(e, showMember) {
   const timeStr = formatTime(e.time);
-  const members = e._members || [e._member];
-  const isSingle = members.length === 1;
-
-  let stripeStyle;
-  if (isSingle) {
-    stripeStyle = `background:${MEMBER_INFO[members[0]].color}`;
-  } else {
-    const colors = members.map(m => MEMBER_INFO[m].color);
-    const pct = 100 / colors.length;
-    const stops = colors.map((c, i) => `${c} ${i*pct}%, ${c} ${(i+1)*pct}%`).join(', ');
-    stripeStyle = `background:linear-gradient(to bottom,${stops})`;
-  }
-
-  let chipHtml = '';
-  if (showMember) {
-    chipHtml = members.map(m => {
-      const info = MEMBER_INFO[m];
-      const kyokoStyle = m === 'KYOKO'
-        ? `style="background:${info.light};color:${info.color};outline:1.5px solid ${info.color};outline-offset:-1px"`
-        : `style="background:${info.light};color:${info.color}"`;
-      return `<span class="event-member-chip" ${kyokoStyle}>${info.name}</span>`;
-    }).join('');
-  }
-
-  return `<div class="event-card" data-member="${members[0]}">
-    <div class="event-stripe" style="${stripeStyle}"></div>
+  const info = MEMBER_INFO[e._member];
+  const kyokoStyle = e._member === 'KYOKO'
+    ? `style="background:${info.light};color:${info.color};outline:1.5px solid ${info.color};outline-offset:-1px"`
+    : `style="background:${info.light};color:${info.color}"`;
+  return `<div class="event-card" data-member="${e._member}">
+    <div class="event-stripe"></div>
     <div class="event-inner">
       <div class="event-meta">
-        ${chipHtml}
+        ${showMember ? `<span class="event-member-chip" ${kyokoStyle}>${info.name}</span>` : ''}
         ${e.category ? `<span class="event-category">${e.category}</span>` : ''}
         ${timeStr ? `<span class="event-time">⏰ ${timeStr}</span>` : ''}
       </div>
@@ -811,7 +783,29 @@ function renderCard(e, showMember) {
 }
 
 function getOutFiltered() { if (outSelected.has('all')) return allEvents; return allEvents.filter(e => outSelected.has(e._member)); }
-function getOutLabel() { if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂'; return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・'); }
+
+function getOutLabel() {
+  if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂';
+  return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・');
+}
+
+// CP 組合客製化標題（根據實際出現的成員）
+function getCpTitle(actualMembers) {
+  const members = actualMembers || [...outSelected];
+  const set = new Set(members);
+  const count = set.size;
+
+  if (count === 1) {
+    const m = [...set][0];
+    return `${MEMBER_INFO[m]?.name || m}行程`;
+  }
+  if (count === 2) {
+    if (set.has('SHIHO') && set.has('KUMI'))  return '🧸🦒きくとし行程';
+    if (set.has('SHIHO') && set.has('KYOKO')) return '🧸🍜としきょん行程';
+    if (set.has('SHIHO') && set.has('MIHO'))  return '🧸🏀としみほ行程';
+  }
+  return '日向坂OG行程';
+}
 
 function getRangeEvents() {
   const range = document.getElementById('output-range').value;
@@ -864,16 +858,28 @@ function getRangeLabel() {
 }
 
 function generateTextOutput() {
-  const inRange = getRangeEvents(); const rangeLabel = getRangeLabel(); const memberLabel = getOutLabel(); const isSingle = !outSelected.has('all') && outSelected.size === 1;
+  const inRange = getRangeEvents();
+  const rangeLabel = getRangeLabel();
+  const memberLabel = getOutLabel();
+
   if (inRange.length === 0) { document.getElementById('output-text').textContent = '此期間暫無行程'; document.getElementById('output-result').style.display = 'block'; return; }
-  let text = `📅 ${rangeLabel}${isSingle ? `${memberLabel}行程` : `日向坂OG行程（${memberLabel}）`}\n${'─'.repeat(22)}\n`;
+
+  // 實際出現在行程裡的成員
+  const actualMembers = [...new Set(inRange.map(e => e._member))];
+  const cpTitle = getCpTitle(actualMembers);
+  const isSingle = actualMembers.length === 1;
+
+  let text = `📅 ${rangeLabel}${cpTitle}\n${'─'.repeat(22)}\n`;
   let lastDate = '';
   inRange.forEach(e => {
     const ds = formatDate(e._date); if (ds !== lastDate) { text += `\n▸ ${ds}\n`; lastDate = ds; }
-    const t = formatTime(e.time); text += !isSingle ? `  【${MEMBER_INFO[e._member].name}】` : '  ';
+    const t = formatTime(e.time);
+    text += !isSingle ? `  【${MEMBER_INFO[e._member].name}】` : '  ';
     if (e.category) text += `[${e.category}] `; if (t) text += `${t} `; text += e.title; if (e.note) text += `（${e.note}）`; text += '\n'; if (e.url) text += `  ${e.url}\n`;
   });
-  text += `\n${'─'.repeat(22)}`; document.getElementById('output-text').textContent = text; document.getElementById('output-result').style.display = 'block';
+  text += `\n${'─'.repeat(22)}`;
+  document.getElementById('output-text').textContent = text;
+  document.getElementById('output-result').style.display = 'block';
 }
 
 function copyOutput() { const text = document.getElementById('output-text').textContent; navigator.clipboard.writeText(text).then(() => { const btn = document.querySelector('.copy-btn'); btn.textContent = '已複製 ✓'; setTimeout(() => btn.textContent = '複製', 2000); }); }
@@ -892,11 +898,12 @@ function getQRImage(cb) {
 function generateCardOutput() {
   const inRange = getRangeEvents();
   if (inRange.length === 0) { alert('此期間暫無行程'); return; }
-  getQRImage(qrEl => drawCard(inRange, qrEl));
+  // 圖卡做共演合併
+  const merged = mergeCoAppearances(inRange);
+  getQRImage(qrEl => drawCard(merged, qrEl));
 }
 
 function drawCard(inRange, qrEl) {
-  const isSingle = !outSelected.has('all') && outSelected.size === 1;
   const canvas = document.getElementById('schedule-canvas');
   const W = 750, PAD = 44;
   const BAND_H = 7, HEADER_H = 112, ROW_H = 72, FOOTER_H = 84;
@@ -926,10 +933,12 @@ function drawCard(inRange, qrEl) {
 
   const rangeLabel = getRangeLabel();
   const memberLabel = getOutLabel();
-  const titleText = isSingle ? `${memberLabel}行程` : '日向坂OG行程';
+  const actualMembers = [...new Set(inRange.map(e => e._member))];
+  const cpTitle = getCpTitle(actualMembers);
+  const isSingle = actualMembers.length === 1;
   ctx.fillStyle = '#1a2a3a';
   ctx.font = `bold 30px ${MINCHO}`;
-  ctx.fillText(titleText, PAD, Y0+50);
+  ctx.fillText(cpTitle, PAD, Y0+50);
 
   const subtitleText = isSingle ? rangeLabel : `${rangeLabel}｜${memberLabel}`;
   ctx.font = '13px sans-serif'; ctx.fillStyle = '#5a7a8a';
@@ -944,7 +953,8 @@ function drawCard(inRange, qrEl) {
   let lastDate = '';
   inRange.forEach((e, i) => {
     const y = Y0 + HEADER_H + i * ROW_H;
-    const info = MEMBER_INFO[e._member];
+    const members = e._members || [e._member];
+    const info = MEMBER_INFO[members[0]];
 
     if (i % 2 === 0) {
       ctx.fillStyle = 'rgba(255,255,255,0.42)';
@@ -954,11 +964,21 @@ function drawCard(inRange, qrEl) {
       ctx.fill();
     }
 
-    ctx.fillStyle = info.color;
-    ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(PAD-12, y+5, 4, ROW_H-10, 2);
-    else ctx.rect(PAD-12, y+5, 4, ROW_H-10);
-    ctx.fill();
+    // 左側色條：多人漸層
+    if (members.length > 1) {
+      const stripeH = ROW_H - 10;
+      const segH = stripeH / members.length;
+      members.forEach((m, mi) => {
+        ctx.fillStyle = MEMBER_INFO[m].color;
+        ctx.fillRect(PAD-12, y+5+mi*segH, 4, segH);
+      });
+    } else {
+      ctx.fillStyle = info.color;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(PAD-12, y+5, 4, ROW_H-10, 2);
+      else ctx.rect(PAD-12, y+5, 4, ROW_H-10);
+      ctx.fill();
+    }
 
     const ds = formatDate(e._date);
     if (ds !== lastDate) {
@@ -966,37 +986,40 @@ function drawCard(inRange, qrEl) {
       ctx.fillText('▸ '+ds, PAD-4, y+15); lastDate = ds;
     }
 
+    // 成員膠囊（多人時並排）
     let chipEndX = PAD;
     if (!isSingle) {
       ctx.font = 'bold 10px sans-serif';
-      const chipW = ctx.measureText(info.name).width + 20;
-
-      if (e._member === 'KYOKO') {
-        ctx.strokeStyle = info.color; ctx.lineWidth = 2;
-        ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(PAD-1, y+20, chipW+2, 20, 11);
-        else ctx.rect(PAD-1, y+20, chipW+2, 20);
-        ctx.stroke();
-        ctx.fillStyle = info.light;
-        ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(PAD+2, y+23, chipW-4, 14, 7);
-        else ctx.rect(PAD+2, y+23, chipW-4, 14);
-        ctx.fill();
-        ctx.strokeStyle = info.color; ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(PAD+2, y+23, chipW-4, 14, 7);
-        else ctx.rect(PAD+2, y+23, chipW-4, 14);
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = info.light;
-        ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(PAD, y+21, chipW, 18, 9);
-        else ctx.rect(PAD, y+21, chipW, 18);
-        ctx.fill();
-      }
-      ctx.fillStyle = info.color;
-      ctx.fillText(info.name, PAD+10, y+33);
-      chipEndX = PAD + chipW + 7;
+      members.forEach(m => {
+        const mInfo = MEMBER_INFO[m];
+        const chipW = ctx.measureText(mInfo.name).width + 20;
+        if (m === 'KYOKO') {
+          ctx.strokeStyle = mInfo.color; ctx.lineWidth = 2;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(chipEndX-1, y+20, chipW+2, 20, 11);
+          else ctx.rect(chipEndX-1, y+20, chipW+2, 20);
+          ctx.stroke();
+          ctx.fillStyle = mInfo.light;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(chipEndX+2, y+23, chipW-4, 14, 7);
+          else ctx.rect(chipEndX+2, y+23, chipW-4, 14);
+          ctx.fill();
+          ctx.strokeStyle = mInfo.color; ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(chipEndX+2, y+23, chipW-4, 14, 7);
+          else ctx.rect(chipEndX+2, y+23, chipW-4, 14);
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = mInfo.light;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(chipEndX, y+21, chipW, 18, 9);
+          else ctx.rect(chipEndX, y+21, chipW, 18);
+          ctx.fill();
+        }
+        ctx.fillStyle = mInfo.color;
+        ctx.fillText(mInfo.name, chipEndX+10, y+33);
+        chipEndX += chipW + 5;
+      });
     }
 
     if (e.category) {
