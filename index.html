@@ -932,15 +932,21 @@ function drawCard(inRange, qrEl) {
   const Y0 = BAND_H;
 
   const rangeLabel = getRangeLabel();
-  const memberLabel = getOutLabel();
+  
+  // 🌟 這裡完全保留你原本的邏輯
   const actualMembers = [...new Set(inRange.map(e => e._member))];
   const cpTitle = getCpTitle(actualMembers);
   const isSingle = actualMembers.length === 1;
+  
+  // ✨ 修正：副標題的成員清單改由實際行程內的成員 (actualMembers) 來動態決定，不再用 memberLabel
+  const actualMemberLabel = actualMembers.map(m => MEMBER_INFO[m]?.name || m).join('・');
+
   ctx.fillStyle = '#1a2a3a';
   ctx.font = `bold 30px ${MINCHO}`;
   ctx.fillText(cpTitle, PAD, Y0+50);
 
-  const subtitleText = isSingle ? rangeLabel : `${rangeLabel}｜${memberLabel}`;
+  // ✨ 修正：將原本的 memberLabel 換成上面新組合的 actualMemberLabel
+  const subtitleText = isSingle ? rangeLabel : `${rangeLabel}｜${actualMemberLabel}`;
   ctx.font = '13px sans-serif'; ctx.fillStyle = '#5a7a8a';
   let sub = subtitleText;
   while (ctx.measureText(sub).width > W-PAD*2-20 && sub.length > 5) sub = sub.slice(0,-1);
