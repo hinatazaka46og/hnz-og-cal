@@ -32,6 +32,9 @@
   --miho-text: #1a7a9a;
   --kyoko: #8a9099;
   --kyoko-light: #f0f2f5;
+  --mirei: #f1c40f;
+  --mirei-light: #fefde8;
+  --mirei-text: #7a6000;
   --sky-bg: #dff0f7;
   --sky-mid: #b8dcea;
   --white: #ffffff;
@@ -139,6 +142,7 @@ header {
 .tab[data-member="KUMI"].active  { background: var(--kumi);  color: #fff; border-color: var(--kumi);  }
 .tab[data-member="MIHO"].active  { background: var(--miho);  color: #fff; border-color: var(--miho);  }
 .tab[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
+.tab[data-member="MIREI"].active { background: var(--mirei); color: #fff; border-color: var(--mirei); }
 
 .tab-check { display: none; font-size: 10px; margin-right: 3px; }
 .tab.active .tab-check { display: inline; }
@@ -192,6 +196,7 @@ main {
 .event-card[data-member="KUMI"]  .event-stripe { background: var(--kumi); }
 .event-card[data-member="MIHO"]  .event-stripe { background: var(--miho); }
 .event-card[data-member="KYOKO"] .event-stripe { background: var(--kyoko); }
+.event-card[data-member="MIREI"] .event-stripe { background: var(--mirei); }
 
 .event-inner { padding: 14px 16px; flex: 1; min-width: 0; }
 
@@ -208,6 +213,7 @@ main {
 .event-card[data-member="KUMI"]  .event-member-chip { background: var(--kumi-light);  color: var(--kumi);  }
 .event-card[data-member="MIHO"]  .event-member-chip { background: var(--miho-light);  color: var(--miho-text); }
 .event-card[data-member="KYOKO"] .event-member-chip { background: var(--kyoko-light); color: var(--kyoko); }
+.event-card[data-member="MIREI"] .event-member-chip { background: var(--mirei-light); color: var(--mirei-text); }
 
 .event-category {
   font-size: 10px; padding: 2px 9px; border-radius: 10px;
@@ -288,6 +294,7 @@ main {
 .out-member-btn[data-member="KUMI"].active  { background: var(--kumi);  color: #fff; border-color: var(--kumi);  }
 .out-member-btn[data-member="MIHO"].active  { background: var(--miho);  color: #fff; border-color: var(--miho);  }
 .out-member-btn[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
+.out-member-btn[data-member="MIREI"].active { background: var(--mirei); color: #333; border-color: var(--mirei); }
 
 .range-select {
   padding: 8px 14px; border-radius: 20px;
@@ -467,7 +474,81 @@ main {
 .others-ig { color: var(--miho-text); text-decoration: none; font-weight: 500; }
 .others-ig:hover { text-decoration: underline; }
 
-@media (max-width: 580px) {
+/* ── DAY BLOCK ── */
+.day-block {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 8px rgba(111,191,217,0.12), 0 0 0 1px rgba(111,191,217,0.08);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.day-block .event-card {
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+.day-divider {
+  height: 1px;
+  background: var(--border);
+  margin-left: 4px;
+}
+
+/* ── ANNIVERSARY BADGE ── */
+.anniversary-badge {
+  font-size: 11px;
+  background: #fff8e1;
+  color: #b8860b;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: 0.5px solid #f0d060;
+  white-space: nowrap;
+}
+
+/* ── ANNIVERSARY CARD (無行程當天) ── */
+.anniversary-card {
+  display: flex;
+  overflow: hidden;
+}
+.anniversary-stripe {
+  width: 4px;
+  background: #87CEEB;
+  flex-shrink: 0;
+}
+.anniversary-inner {
+  padding: 12px 16px;
+  flex: 1;
+  background: #eef8fd;
+}
+.anniversary-label {
+  font-size: 10px;
+  color: #4a8aaa;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.anniversary-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a4a6a;
+}
+
+/* ── FOOTER COUNTDOWN ── */
+.footer-countdown {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 13px;
+  color: var(--text-soft);
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  justify-content: center;
+}
+.footer-countdown-days {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
   .site-title { font-size: 17px; }
   .event-title { font-size: 14px; }
   .header-inner { padding: 14px 14px 12px; }
@@ -518,6 +599,7 @@ main {
       <button class="tab" data-member="KUMI"><span class="tab-check">✓</span>佐々木久美</button>
       <button class="tab" data-member="KYOKO"><span class="tab-check">✓</span>齊藤京子</button>
       <button class="tab" data-member="MIHO"><span class="tab-check">✓</span>渡邉美穂</button>
+      <button class="tab" data-member="MIREI"><span class="tab-check">✓</span>佐々木美玲</button>
       <button class="tab-others" onclick="openOthers()">其他成員 ↗</button>
     </div>
   </div>
@@ -552,6 +634,11 @@ main {
         <div class="sub-name">渡邉美穂</div>
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#1a7a9a;border-color:#b0d0e8">查看 / 訂閱日曆</a>
       </div>
+      <div class="sub-item">
+        <div class="sub-color-bar"><span style="background:#f1c40f"></span><span style="background:#f1c40f"></span></div>
+        <div class="sub-name">佐々木美玲</div>
+        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=b5e9566a35c892328f752d6d2a91006ad4f2ad9893daec535caadedec2a44fe2%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#7a6000;border-color:#f1c40f">查看 / 訂閱日曆</a>
+      </div>
     </div>
   </div>
 
@@ -563,7 +650,7 @@ main {
         發現漏掉的 OG 行程了嗎？歡迎幫忙點選右側按鈕填寫投稿問卷！<br>
         資料將自動歸類至後台，並於<strong>每日凌晨 1-2 點</strong>同步至日曆。
       </div>
-      <a class="form-panel-btn" href="https://script.google.com/macros/s/AKfycbzLiKxXRM0Ah06vPAW89zK303HfZbBMzSCQfed57nlFXi-DWLVmtB_m1ZAWJJr1GPui4g/exec" target="_blank">📄 前往投稿行程</a>
+      <a class="form-panel-btn" href="https://script.google.com/macros/s/AKfycbzaZyo9WelvV37XnSmQCh_cOeNqrs-MROEeoGs9nTfVAz3DtxQa602ZMb5w1RYZ3ppaTA/exec" target="_blank">📄 前往投稿行程</a>
     </div>
   </div>
 
@@ -577,6 +664,7 @@ main {
       <button class="out-member-btn" data-member="KUMI">佐々木久美</button>
       <button class="out-member-btn" data-member="KYOKO">齊藤京子</button>
       <button class="out-member-btn" data-member="MIHO">渡邉美穂</button>
+      <button class="out-member-btn" data-member="MIREI">佐々木美玲</button>
     </div>
     <div class="output-controls">
       <select class="range-select" id="output-range">
@@ -600,7 +688,7 @@ main {
 <div class="fab-container" id="fab-container">
   <div class="fab-menu">
     <button class="fab-item" onclick="scrollToPanel('panel-subscribe')">📅 訂閱日曆</button>
-    <a class="fab-item" href="https://script.google.com/macros/s/AKfycbzLiKxXRM0Ah06vPAW89zK303HfZbBMzSCQfed57nlFXi-DWLVmtB_m1ZAWJJr1GPui4g/exec" target="_blank" style="text-decoration: none; color: var(--text);">✍️ 投稿行程</a>
+    <a class="fab-item" href="https://script.google.com/macros/s/AKfycbzaZyo9WelvV37XnSmQCh_cOeNqrs-MROEeoGs9nTfVAz3DtxQa602ZMb5w1RYZ3ppaTA/exec" target="_blank" style="text-decoration: none; color: var(--text);">✍️ 投稿行程</a>
     <button class="fab-item" onclick="scrollToPanel('panel-output')">📋 輸出行程</button>
   </div>
   <button class="fab-main-btn" onclick="toggleFabMenu(event)">
@@ -629,14 +717,15 @@ const SITE_URL = 'https://hinatazaka46og.github.io/hnz-og-cal/';
 const MINCHO = "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', 'YuMincho', 'MS Mincho', Georgia, serif";
 
 const SHEET_ID = '1G70fvNSynS6p2YBo_SNsU8w0tnU8SUAp3De21hRYMSQ';
-const SHEETS = ['MIHO','KUMI','SHIHO','KYOKO'];
+const SHEETS = ['MIHO','KUMI','SHIHO','KYOKO','MIREI'];
 const WEEKDAYS = ['日','一','二','三','四','五','六'];
 
 const MEMBER_INFO = {
-  SHIHO: { name:'加藤史帆',    color:'#0234b3', light:'#e8eaf6', textColor:'#0234b3' },
-  KUMI:  { name:'佐々木久美',  color:'#800080', light:'#f5e5f5', textColor:'#800080' },
-  MIHO:  { name:'渡邉美穂',   color:'#6fbfd9', light:'#e8f6fb', textColor:'#1a7a9a' },
-  KYOKO: { name:'齊藤京子',   color:'#8a9099', light:'#f0f2f5', textColor:'#40454c' },
+  SHIHO: { name:'加藤史帆',   color:'#0234b3', light:'#e8eaf6', textColor:'#0234b3' },
+  KUMI:  { name:'佐々木久美', color:'#800080', light:'#f5e5f5', textColor:'#800080' },
+  MIHO:  { name:'渡邉美穂',  color:'#6fbfd9', light:'#e8f6fb', textColor:'#1a7a9a' },
+  KYOKO: { name:'齊藤京子',  color:'#8a9099', light:'#f0f2f5', textColor:'#40454c' },
+  MIREI: { name:'佐々木美玲', color:'#f1c40f', light:'#fefde8', textColor:'#7a6000' },
 };
 
 let allEvents = [];
@@ -644,8 +733,63 @@ let viewSelected = new Set(['all']);
 let outSelected = new Set(['all']);
 
 function toggleFabMenu(e) { e.stopPropagation(); document.getElementById('fab-container').classList.toggle('open'); }
-function scrollToPanel(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); document.getElementById('fab-container').classList.remove('open'); }
+function scrollToPanel(id) {
+  document.getElementById('fab-container').classList.remove('open');
+  const el = document.getElementById(id);
+  const headerH = document.querySelector('header').offsetHeight;
+  const top = el.getBoundingClientRect().top + window.scrollY - headerH - 12;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
 document.addEventListener('click', () => { document.getElementById('fab-container').classList.remove('open'); });
+
+// ── ANNIVERSARY ──
+let anniversaryData = [];
+
+async function fetchAnniversary() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=ANNIVERSARY`;
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    if (!json.table || !json.table.rows) return [];
+    const cols = json.table.cols.map(c => c.label);
+    return json.table.rows.map(row => {
+      const obj = {};
+      cols.forEach((col, i) => { const cell = row.c[i]; obj[col] = cell ? (cell.v !== null ? cell.v : '') : ''; });
+      return obj;
+    }).filter(r => r.name);
+  } catch(e) { return []; }
+}
+
+function getTodayAnniversaries(date) {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  const y = date.getFullYear();
+  return anniversaryData.filter(a => Number(a.month) === m && Number(a.day) === d).map(a => {
+    const years = a.start_year ? (y - Number(a.start_year)) : null;
+    return { name: a.name, years };
+  });
+}
+
+function renderAnniversaryBadges(anniversaries) {
+  return anniversaries.map(a => {
+    const label = a.years ? `${a.name} ${a.years}周年` : a.name;
+    return `<span class="anniversary-badge">${label}</span>`;
+  }).join('');
+}
+
+function renderAnniversaryCards(anniversaries) {
+  return anniversaries.map(a => {
+    const label = a.years ? `${a.name} ${a.years}周年` : a.name;
+    return `<div class="anniversary-card">
+      <div class="anniversary-stripe"></div>
+      <div class="anniversary-inner">
+        <div class="anniversary-label">🎉 日向坂46 記念日</div>
+        <div class="anniversary-title">${label}</div>
+      </div>
+    </div>`;
+  }).join('<div class="day-divider"></div>');
+}
 
 async function fetchSheet(sheetName) {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
@@ -732,8 +876,9 @@ function renderSchedule() {
   const withDate = filtered.filter(e => e._date).sort((a,b) => a._date-b._date || (a.time||'').localeCompare(b.time||''));
   const noDate = filtered.filter(e => !e._date);
   const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-3); cutoff.setHours(0,0,0,0);
-  const future = withDate.filter(e => e._date >= cutoff);
+  const future = mergeCoAppearances(withDate.filter(e => e._date >= cutoff));
 
+  // 收集有行程的日期
   const groups = {};
   future.forEach(e => {
     const k = e._date.toDateString();
@@ -741,21 +886,58 @@ function renderSchedule() {
     groups[k].events.push(e);
   });
 
-  let html = '';
-  if (Object.keys(groups).length === 0 && noDate.length === 0) html = '<div class="empty">暫無行程資料</div>';
+  // 收集有紀念日但無行程的日期，加進 groups
+  const now = new Date(); now.setHours(0,0,0,0);
+  const lookAhead = new Date(now); lookAhead.setDate(now.getDate() + 30);
+  for (let d = new Date(now); d <= lookAhead; d.setDate(d.getDate()+1)) {
+    const anniversaries = getTodayAnniversaries(d);
+    if (anniversaries.length > 0) {
+      const k = d.toDateString();
+      if (!groups[k]) groups[k] = { date: new Date(d), events: [], anniversaryOnly: true };
+    }
+  }
 
-  if (Object.keys(groups).length > 0) {
+  // 排序
+  const sortedGroups = Object.values(groups).sort((a,b) => a.date - b.date);
+
+  let html = '';
+  if (sortedGroups.length === 0 && noDate.length === 0) html = '<div class="empty">暫無行程資料</div>';
+
+  if (sortedGroups.length > 0) {
     html += '<div class="section-label">近期行程</div>';
-    Object.values(groups).forEach(group => {
-      html += `<div class="date-group"><div class="date-header"><span class="date-main">${formatDate(group.date)}</span>${isToday(group.date) ? '<span class="date-today-badge">TODAY</span>' : ''}</div>`;
-      group.events.forEach(e => { html += renderCard(e, multiMember); });
-      html += '</div>';
+    sortedGroups.forEach(group => {
+      const anniversaries = getTodayAnniversaries(group.date);
+      const todayBadge = isToday(group.date) ? '<span class="date-today-badge">TODAY</span>' : '';
+      const annBadges = anniversaries.length > 0 ? renderAnniversaryBadges(anniversaries) : '';
+
+      html += `<div class="date-group"><div class="date-header"><span class="date-main">${formatDate(group.date)}</span>${todayBadge}${annBadges}</div>`;
+      html += '<div class="day-block">';
+
+      if (group.anniversaryOnly) {
+        // 無行程當天：只顯示紀念日卡片
+        html += renderAnniversaryCards(anniversaries);
+      } else {
+        // 有行程：紀念日卡片放第一筆（如果有的話）
+        if (anniversaries.length > 0 && isToday(group.date)) {
+          // 今天有紀念日：badge 已顯示在 header，不重複顯示卡片
+        }
+        group.events.forEach((e, idx) => {
+          if (idx > 0) html += '<div class="day-divider"></div>';
+          html += renderCard(e, multiMember);
+        });
+      }
+
+      html += '</div></div>';
     });
   }
 
   if (noDate.length > 0) {
-    html += '<div class="section-label">日期未定</div><div class="no-date-section">';
-    noDate.forEach(e => { html += renderCard(e, multiMember); });
+    const noDateMerged = mergeCoAppearances(noDate);
+    html += '<div class="section-label">日期未定</div><div class="no-date-section day-block">';
+    noDateMerged.forEach((e, idx) => {
+      if (idx > 0) html += '<div class="day-divider"></div>';
+      html += renderCard(e, multiMember);
+    });
     html += '</div>';
   }
   container.innerHTML = html;
@@ -785,7 +967,7 @@ function renderCard(e, showMember) {
 function getOutFiltered() { if (outSelected.has('all')) return allEvents; return allEvents.filter(e => outSelected.has(e._member)); }
 
 function getOutLabel() {
-  if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂';
+  if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂・佐々木美玲';
   return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・');
 }
 
@@ -1094,8 +1276,12 @@ function closeCard(e) {
 
 async function init() {
   try {
-    const results = await Promise.all(SHEETS.map(fetchSheet));
-    allEvents = results.flat().map(e => ({ ...e, _date: parseDate(e.date) }));
+    const [memberResults, annData] = await Promise.all([
+      Promise.all(SHEETS.map(fetchSheet)),
+      fetchAnniversary()
+    ]);
+    allEvents = memberResults.flat().map(e => ({ ...e, _date: parseDate(e.date) }));
+    anniversaryData = annData;
     renderSchedule();
   } catch(err) {
     document.getElementById('schedule-container').innerHTML = '<div class="empty">載入失敗，請確認試算表已設為公開</div>';
@@ -1167,9 +1353,25 @@ init();
 <footer>
   <div class="footer-inner">
     <span class="footer-lyric">「 一生一緒日向坂 」</span>
+    <div class="footer-countdown">
+      <span>距離日向坂46 10周年還有</span>
+      <span class="footer-countdown-days" id="countdown-days">---</span>
+      <span>天</span>
+    </div>
     <span class="footer-sub">fan-made schedule · not official</span>
   </div>
 </footer>
+
+<script>
+// 倒數計算：2029/3/27
+(function() {
+  const target = new Date('2029-03-27T00:00:00+09:00');
+  const now = new Date();
+  const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  const el = document.getElementById('countdown-days');
+  if (el) el.textContent = diff > 0 ? diff : '🎉';
+})();
+</script>
 
 <style>
 footer { background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%); border-top: 1px solid var(--sky-mid); padding: 20px 24px; text-align: center; }
