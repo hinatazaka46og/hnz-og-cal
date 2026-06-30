@@ -287,6 +287,16 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 .anniversary-label { font-size: 10px; color: #4a8aaa; font-weight: 500; margin-bottom: 3px; }
 .anniversary-title { font-size: 14px; font-weight: 600; color: #1a4a6a; }
 
+.birthday-badge {
+  font-size: 11px; background: #fff0f5; color: #c2185b; padding: 2px 10px;
+  border-radius: 10px; font-weight: 500; border: 0.5px solid #f5b8d0; white-space: nowrap;
+}
+.birthday-card { display: flex; overflow: hidden; }
+.birthday-stripe { width: 4px; background: #ff8fab; flex-shrink: 0; }
+.birthday-inner { padding: 12px 16px; flex: 1; background: #fff0f5; }
+.birthday-label { font-size: 10px; color: #c2185b; font-weight: 500; margin-bottom: 3px; }
+.birthday-title { font-size: 14px; font-weight: 600; color: #99154f; }
+
 .footer-countdown {
   font-family: 'Noto Serif JP', serif; font-size: 13px; color: var(--text-soft);
   letter-spacing: 0.08em; display: flex; align-items: baseline; gap: 4px; justify-content: center;
@@ -462,9 +472,26 @@ function scrollToPanel(id) {
 document.addEventListener('click', () => { document.getElementById('fab-container').classList.remove('open'); });
 
 let anniversaryData = [];
+let birthdayData = [];
 
 async function fetchAnniversary() {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=ANNIVERSARY`;
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    if (!json.table || !json.table.rows) return [];
+    const cols = json.table.cols.map(c => c.label);
+    return json.table.rows.map(row => {
+      const obj = {};
+      cols.forEach((col, i) => { const cell = row.c[i]; obj[col] = cell ? (cell.v !== null ? cell.v : '') : ''; });
+      return obj;
+    }).filter(r => r.name);
+  } catch(e) { return []; }
+}
+
+async function fetchBirthday() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=BIRTHDAY`;
   try {
     const res = await fetch(url);
     const text = await res.text();
@@ -489,10 +516,27 @@ function getTodayAnniversaries(date) {
   });
 }
 
+function getTodayBirthdays(date) {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  const y = date.getFullYear();
+  return birthdayData.filter(b => Number(b.month) === m && Number(b.day) === d).map(b => {
+    const age = b.birth_year ? (y - Number(b.birth_year)) : null;
+    return { name: b.name, age };
+  });
+}
+
 function renderAnniversaryBadges(anniversaries) {
   return anniversaries.map(a => {
     const label = a.years ? `${a.name} ${a.years}周年` : a.name;
     return `<span class="anniversary-badge">${label}</span>`;
+  }).join('');
+}
+
+function renderBirthdayBadges(birthdays) {
+  return birthdays.map(b => {
+    const label = b.age ? `${b.name} ${b.age}歲生日` : `${b.name} 生日`;
+    return `<span class="birthday-badge">🎂 ${label}</span>`;
   }).join('');
 }
 
@@ -504,6 +548,19 @@ function renderAnniversaryCards(anniversaries) {
       <div class="anniversary-inner">
         <div class="anniversary-label">🎉 日向坂46 記念日</div>
         <div class="anniversary-title">${label}</div>
+      </div>
+    </div>`;
+  }).join('<div class="day-divider"></div>');
+}
+
+function renderBirthdayCards(birthdays) {
+  return birthdays.map(b => {
+    const label = b.age ? `${b.name} ${b.age}歲生日` : `${b.name} 生日`;
+    return `<div class="birthday-card">
+      <div class="birthday-stripe"></div>
+      <div class="birthday-inner">
+        <div class="birthday-label">🎂 生日快樂</div>
+        <div class="birthday-title">${label}</div>
       </div>
     </div>`;
   }).join('<div class="day-divider"></div>');
@@ -603,13 +660,18 @@ function renderSchedule() {
     groups[k].events.push(e);
   });
 
-  const now = new Date(); now.setHours(0,0,0,0);
-  const lookAhead = new Date(now); lookAhead.setDate(now.getDate() + 30);
-  for (let d = new Date(now); d <= lookAhead; d.setDate(d.getDate()+1)) {
-    const anniversaries = getTodayAnniversaries(d);
-    if (anniversaries.length > 0) {
-      const k = d.toDateString();
-      if (!groups[k]) groups[k] = { date: new Date(d), events: [], anniversaryOnly: true };
+  const showSpecial = viewSelected.has('all');
+  if (showSpecial) {
+    const now = new Date(); now.setHours(0,0,0,0);
+    const lookAhead = new Date(now); lookAhead.setDate(now.getDate() + 30);
+    for (let d = new Date(now); d <= lookAhead; d.setDate(d.getDate()+1)) {
+      const anniversaries = getTodayAnniversaries(d);
+      const birthdays = getTodayBirthdays(d);
+      if (anniversaries.length > 0 || birthdays.length > 0) {
+        const k = d.toDateString();
+        if (!groups[k]) groups[k] = { date: new Date(d), events: [], specialOnly: true, anniversaries, birthdays };
+        else { groups[k].anniversaries = anniversaries; groups[k].birthdays = birthdays; }
+      }
     }
   }
 
@@ -621,15 +683,20 @@ function renderSchedule() {
   if (sortedGroups.length > 0) {
     html += '<div class="section-label">近期行程</div>';
     sortedGroups.forEach(group => {
-      const anniversaries = getTodayAnniversaries(group.date);
+      const anniversaries = showSpecial ? getTodayAnniversaries(group.date) : [];
+      const birthdays = showSpecial ? getTodayBirthdays(group.date) : [];
       const todayBadge = isToday(group.date) ? '<span class="date-today-badge">TODAY</span>' : '';
       const annBadges = anniversaries.length > 0 ? renderAnniversaryBadges(anniversaries) : '';
+      const bdayBadges = birthdays.length > 0 ? renderBirthdayBadges(birthdays) : '';
 
-      html += `<div class="date-group"><div class="date-header"><span class="date-main">${formatDate(group.date)}</span>${todayBadge}${annBadges}</div>`;
+      html += `<div class="date-group"><div class="date-header"><span class="date-main">${formatDate(group.date)}</span>${todayBadge}${annBadges}${bdayBadges}</div>`;
       html += '<div class="day-block">';
 
-      if (group.anniversaryOnly) {
-        html += renderAnniversaryCards(anniversaries);
+      if (group.specialOnly) {
+        const cards = [];
+        if (group.anniversaries && group.anniversaries.length) cards.push(renderAnniversaryCards(group.anniversaries));
+        if (group.birthdays && group.birthdays.length) cards.push(renderBirthdayCards(group.birthdays));
+        html += cards.join('<div class="day-divider"></div>');
       } else {
         group.events.forEach((e, idx) => {
           if (idx > 0) html += '<div class="day-divider"></div>';
@@ -989,12 +1056,14 @@ function closeCard(e) {
 
 async function init() {
   try {
-    const [memberResults, annData] = await Promise.all([
+    const [memberResults, annData, bdayData] = await Promise.all([
       Promise.all(SHEETS.map(fetchSheet)),
-      fetchAnniversary()
+      fetchAnniversary(),
+      fetchBirthday()
     ]);
     allEvents = memberResults.flat().map(e => ({ ...e, _date: parseDate(e.date) }));
     anniversaryData = annData;
+    birthdayData = bdayData;
     renderSchedule();
   } catch(err) {
     document.getElementById('schedule-container').innerHTML = '<div class="empty">載入失敗，請確認試算表已設為公開</div>';
