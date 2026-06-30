@@ -32,9 +32,9 @@
   --miho-text: #1a7a9a;
   --kyoko: #8a9099;
   --kyoko-light: #f0f2f5;
-  --mirei: #f1c40f;
-  --mirei-light: #fefde8;
-  --mirei-text: #7a6000;
+  --MIPAN: #f1c40f;
+  --MIPAN-light: #fefde8;
+  --MIPAN-text: #7a6000;
   --sky-bg: #dff0f7;
   --sky-mid: #b8dcea;
   --white: #ffffff;
@@ -142,7 +142,7 @@ header {
 .tab[data-member="KUMI"].active  { background: var(--kumi);  color: #fff; border-color: var(--kumi);  }
 .tab[data-member="MIHO"].active  { background: var(--miho);  color: #fff; border-color: var(--miho);  }
 .tab[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
-.tab[data-member="MIREI"].active { background: var(--mirei); color: #fff; border-color: var(--mirei); }
+.tab[data-member="MIPAN"].active { background: var(--MIPAN); color: #fff; border-color: var(--MIPAN); }
 
 .tab-check { display: none; font-size: 10px; margin-right: 3px; }
 .tab.active .tab-check { display: inline; }
@@ -196,7 +196,7 @@ main {
 .event-card[data-member="KUMI"]  .event-stripe { background: var(--kumi); }
 .event-card[data-member="MIHO"]  .event-stripe { background: var(--miho); }
 .event-card[data-member="KYOKO"] .event-stripe { background: var(--kyoko); }
-.event-card[data-member="MIREI"] .event-stripe { background: var(--mirei); }
+.event-card[data-member="MIPAN"] .event-stripe { background: var(--MIPAN); }
 
 .event-inner { padding: 14px 16px; flex: 1; min-width: 0; }
 
@@ -213,7 +213,7 @@ main {
 .event-card[data-member="KUMI"]  .event-member-chip { background: var(--kumi-light);  color: var(--kumi);  }
 .event-card[data-member="MIHO"]  .event-member-chip { background: var(--miho-light);  color: var(--miho-text); }
 .event-card[data-member="KYOKO"] .event-member-chip { background: var(--kyoko-light); color: var(--kyoko); }
-.event-card[data-member="MIREI"] .event-member-chip { background: var(--mirei-light); color: var(--mirei-text); }
+.event-card[data-member="MIPAN"] .event-member-chip { background: var(--MIPAN-light); color: var(--MIPAN-text); }
 
 .event-category {
   font-size: 10px; padding: 2px 9px; border-radius: 10px;
@@ -294,7 +294,7 @@ main {
 .out-member-btn[data-member="KUMI"].active  { background: var(--kumi);  color: #fff; border-color: var(--kumi);  }
 .out-member-btn[data-member="MIHO"].active  { background: var(--miho);  color: #fff; border-color: var(--miho);  }
 .out-member-btn[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
-.out-member-btn[data-member="MIREI"].active { background: var(--mirei); color: #333; border-color: var(--mirei); }
+.out-member-btn[data-member="MIPAN"].active { background: var(--MIPAN); color: #333; border-color: var(--MIPAN); }
 
 .range-select {
   padding: 8px 14px; border-radius: 20px;
@@ -599,7 +599,7 @@ main {
       <button class="tab" data-member="KUMI"><span class="tab-check">✓</span>佐々木久美</button>
       <button class="tab" data-member="KYOKO"><span class="tab-check">✓</span>齊藤京子</button>
       <button class="tab" data-member="MIHO"><span class="tab-check">✓</span>渡邉美穂</button>
-      <button class="tab" data-member="MIREI"><span class="tab-check">✓</span>佐々木美玲</button>
+      <button class="tab" data-member="MIPAN"><span class="tab-check">✓</span>佐々木美玲</button>
       <button class="tab-others" onclick="openOthers()">其他成員 ↗</button>
     </div>
   </div>
@@ -664,7 +664,7 @@ main {
       <button class="out-member-btn" data-member="KUMI">佐々木久美</button>
       <button class="out-member-btn" data-member="KYOKO">齊藤京子</button>
       <button class="out-member-btn" data-member="MIHO">渡邉美穂</button>
-      <button class="out-member-btn" data-member="MIREI">佐々木美玲</button>
+      <button class="out-member-btn" data-member="MIPAN">佐々木美玲</button>
     </div>
     <div class="output-controls">
       <select class="range-select" id="output-range">
@@ -717,7 +717,7 @@ const SITE_URL = 'https://hinatazaka46og.github.io/hnz-og-cal/';
 const MINCHO = "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', 'YuMincho', 'MS Mincho', Georgia, serif";
 
 const SHEET_ID = '1G70fvNSynS6p2YBo_SNsU8w0tnU8SUAp3De21hRYMSQ';
-const SHEETS = ['MIHO','KUMI','SHIHO','KYOKO','MIREI'];
+const SHEETS = ['MIHO','KUMI','SHIHO','KYOKO','MIPAN'];
 const WEEKDAYS = ['日','一','二','三','四','五','六'];
 
 const MEMBER_INFO = {
@@ -725,7 +725,7 @@ const MEMBER_INFO = {
   KUMI:  { name:'佐々木久美', color:'#800080', light:'#f5e5f5', textColor:'#800080' },
   MIHO:  { name:'渡邉美穂',  color:'#6fbfd9', light:'#e8f6fb', textColor:'#1a7a9a' },
   KYOKO: { name:'齊藤京子',  color:'#8a9099', light:'#f0f2f5', textColor:'#40454c' },
-  MIREI: { name:'佐々木美玲', color:'#f1c40f', light:'#fefde8', textColor:'#7a6000' },
+  MIPAN: { name:'佐々木美玲', color:'#f1c40f', light:'#fefde8', textColor:'#7a6000' },
 };
 
 let allEvents = [];
