@@ -599,7 +599,11 @@ function parseDate(val) {
   }
   return null;
 }
-function formatDate(d) { return `${d.getMonth()+1}/${d.getDate()}（${WEEKDAYS[d.getDay()]}）`; }
+function formatDate(d) {
+  const currentYear = new Date().getFullYear();
+  const yearStr = d.getFullYear() !== currentYear ? `${d.getFullYear()}/` : '';
+  return `${yearStr}${d.getMonth()+1}/${d.getDate()}（${WEEKDAYS[d.getDay()]}）`;
+}
 function formatTime(val) { if (!val) return ''; const s = String(val).trim(); return s.includes(':') ? s : ''; }
 function isToday(d) { const n = new Date(); return d.getFullYear()===n.getFullYear() && d.getMonth()===n.getMonth() && d.getDate()===n.getDate(); }
 function getViewFiltered() { if (viewSelected.has('all')) return allEvents; return allEvents.filter(e => viewSelected.has(e._member)); }
