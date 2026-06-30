@@ -135,8 +135,22 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 
 .sub-list { display: flex; flex-direction: column; gap: 12px; }
 .sub-item { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.sub-color-bar { display: flex; border-radius: 4px; overflow: hidden; flex-shrink: 0; width: 28px; height: 18px; box-shadow: 0 0 0 1px rgba(0,0,0,0.1); }
-.sub-color-bar span { flex: 1; display: block; }
+/* 🎯 模擬兩支手燈的全新樣式 */
+.sub-color-bar { 
+  display: flex; 
+  gap: 3px;          /* 兩支手燈中間的間距 */
+  flex-shrink: 0; 
+  width: 25px;       /* 稍微縮窄整體寬度 */
+  height: 18px; 
+}
+
+.sub-color-bar span { 
+  flex: 1; 
+  display: block; 
+  border-radius: 0;  /* 移除圓角，變成直角手燈感 */
+  /* 給每支手燈淡淡的陰影外框，即使是白色（齊藤京子）也能清晰看見每支的輪廓 */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15); 
+}
 .sub-name { font-size: 13px; width: 96px; flex-shrink: 0; font-weight: 500; }
 .sub-btn { font-size: 11px; padding: 5px 20px; border-radius: 12px; text-decoration: none; font-weight: 500; border: 1.5px solid; transition: opacity 0.15s; white-space: nowrap; }
 .sub-btn:hover { opacity: 0.7; }
@@ -369,17 +383,20 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=1bb7b20d3c8ff16bc24f43f9ba9e01c99ac6e30440ebc6b11eca7cf5b2f8c18e%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#800080;border-color:#800080">查看 / 訂閱日曆</a>
       </div>
       <div class="sub-item">
-        <div class="sub-color-bar"><span style="background:#ffffff"></span><span style="background:#ffffff"></span></div>
-        <div class="sub-name">齊藤京子</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=ecb6f0c79530e20fb6bacaec5b6bdd8cc90a13628540ccd4e6a3b0a0f8f4da83%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#000000;border-color:#000000">查看 / 訂閱日曆</a>
-      </div>
+  <div class="sub-color-bar">
+    <span style="background:#ffffff"></span>
+    <span style="background:#ffffff"></span>
+  </div>
+  <div class="sub-name">齊藤京子</div>
+  <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=ecb6f0c79530e20fb6bacaec5b6bdd8cc90a13628540ccd4e6a3b0a0f8f4da83%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#000000;border-color:#000000">查看 / 訂閱日曆</a>
+</div>
       <div class="sub-item">
         <div class="sub-color-bar"><span style="background:#f1c40f"></span><span style="background:#f1c40f"></span></div>
         <div class="sub-name">佐々木美玲</div>
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=b5e9566a35c892328f752d6d2a91006ad4f2ad9893daec535caadedec2a44fe2%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#7a6000;border-color:#f1c40f">查看 / 訂閱日曆</a>
       </div>
       <div class="sub-item">
-        <div class="sub-color-bar"><span style="background:#b0d0e8"></span><span style="background:#b0d0e8"></span></div>
+        <div class="sub-color-bar"><span style="background:#ffffff"></span><span style="background:#b0d0e8"></span></div>
         <div class="sub-name">渡邉美穂</div>
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#1a7a9a;border-color:#b0d0e8">查看 / 訂閱日曆</a>
       </div>
