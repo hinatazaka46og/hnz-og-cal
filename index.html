@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>日向坂OG行程</title>
 
-<!-- 這裡加入了自訂 LOGO 圖示 -->
 <link rel="icon" href="https://cdn.hinatazaka46.com/files/14/diary/official/member/poka_0419_2_fhw9fh9ewhfhee0wh90ehw0fewhw8e0he0.png" type="image/png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,11 +13,8 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#dff0f7">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- 修正 1：補上實體 QR Code 生成必備的第三方庫 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
@@ -32,9 +28,9 @@
   --miho-text: #1a7a9a;
   --kyoko: #000000;
   --kyoko-light: #f0f2f5;
-  --MIPAN: #f1c40f;
-  --MIPAN-light: #fefde8;
-  --MIPAN-text: #7a6000;
+  --mipan: #f1c40f;
+  --mipan-light: #fefde8;
+  --mipan-text: #7a6000;
   --sky-bg: #dff0f7;
   --sky-mid: #b8dcea;
   --white: #ffffff;
@@ -46,223 +42,100 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans JP', sans-serif; background: #dff0f7; min-height: 100vh; color: var(--text); }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Noto Sans JP', sans-serif;
-  background: #dff0f7;
-  min-height: 100vh;
-  color: var(--text);
-}
-
-/* ── HEADER ── */
 header {
   background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
   border-bottom: 1px solid var(--sky-mid);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: sticky; top: 0; z-index: 100;
   box-shadow: 0 2px 20px rgba(111,191,217,0.25);
 }
-
-.header-inner {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 18px 20px 14px;
-}
-
-.header-top {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
+.header-inner { max-width: 860px; margin: 0 auto; padding: 18px 20px 14px; }
+.header-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
 .header-icon {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(111,191,217,0.3);
-  border: 2px solid var(--sky-mid);
+  width: 42px; height: 42px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(111,191,217,0.3); border: 2px solid var(--sky-mid);
 }
+.header-icon img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.site-title { font-family: 'Noto Serif JP', serif; font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: 0.04em; line-height: 1.2; }
+.site-subtitle { font-size: 10px; font-weight: 300; color: var(--text-soft); letter-spacing: 0.18em; margin-top: 2px; }
 
-.header-icon img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center top;
-}
-
-.site-title {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 20px; font-weight: 700;
-  color: var(--text); letter-spacing: 0.04em; line-height: 1.2;
-}
-
-.site-subtitle {
-  font-size: 10px; font-weight: 300;
-  color: var(--text-soft); letter-spacing: 0.18em; margin-top: 2px;
-}
-
-/* ── TABS ── */
-.tabs-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.tabs-label {
-  font-size: 10px;
-  color: var(--text-soft);
-  letter-spacing: 0.1em;
-  margin-right: 2px;
-}
-
+.tabs-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.tabs-label { font-size: 10px; color: var(--text-soft); letter-spacing: 0.1em; margin-right: 2px; }
 .tab {
-  padding: 7px 18px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border);
-  font-size: 12px; font-weight: 500;
-  cursor: pointer;
-  transition: all 0.18s;
-  background: transparent;
-  color: var(--text-soft);
-  font-family: 'Noto Sans JP', sans-serif;
-  letter-spacing: 0.04em;
+  padding: 7px 18px; border-radius: 20px; border: 1.5px solid var(--border);
+  font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.18s;
+  background: transparent; color: var(--text-soft); font-family: 'Noto Sans JP', sans-serif; letter-spacing: 0.04em;
 }
-
 .tab:hover { background: var(--white); }
-
 .tab[data-member="all"].active { background: var(--text); color: #fff; border-color: var(--text); }
 .tab[data-member="SHIHO"].active { background: var(--shiho); color: #fff; border-color: var(--shiho); }
 .tab[data-member="KUMI"].active  { background: var(--kumi);  color: #fff; border-color: var(--kumi);  }
 .tab[data-member="MIHO"].active  { background: var(--miho);  color: #fff; border-color: var(--miho);  }
 .tab[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
-.tab[data-member="MIPAN"].active { background: var(--MIPAN); color: #fff; border-color: var(--MIPAN); }
-
+.tab[data-member="MIPAN"].active { background: var(--mipan); color: #333; border-color: var(--mipan); }
 .tab-check { display: none; font-size: 10px; margin-right: 3px; }
 .tab.active .tab-check { display: inline; }
 
-/* ── MAIN ── */
-main {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 28px 16px 80px;
-}
-
+main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 .section-label {
-  font-size: 10px; font-weight: 700;
-  letter-spacing: 0.18em; color: var(--text-soft);
-  text-transform: uppercase;
-  margin: 32px 0 14px; padding-left: 2px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em; color: var(--text-soft);
+  text-transform: uppercase; margin: 32px 0 14px; padding-left: 2px;
   display: flex; align-items: center; gap: 8px;
 }
-.section-label::after {
-  content: ''; flex: 1; height: 1px; background: var(--sky-mid);
-}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--sky-mid); }
 
 .date-group { margin-bottom: 24px; }
-
-.date-header {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 10px; padding-left: 2px;
-}
-
+.date-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-left: 2px; flex-wrap: wrap; }
 .date-main { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: 0.03em; }
-
 .date-today-badge {
-  font-size: 10px; background: var(--miho); color: white;
-  padding: 2px 10px; border-radius: 10px; font-weight: 700; letter-spacing: 0.05em;
+  font-size: 10px; background: var(--miho); color: white; padding: 2px 10px;
+  border-radius: 10px; font-weight: 700; letter-spacing: 0.05em;
 }
 
-/* ── EVENT CARD ── */
 .event-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  margin-bottom: 10px;
+  background: var(--white); border-radius: var(--radius); margin-bottom: 10px;
   box-shadow: 0 1px 8px rgba(111,191,217,0.12), 0 0 0 1px rgba(111,191,217,0.08);
-  overflow: hidden;
-  transition: transform 0.15s, box-shadow 0.15s;
-  display: flex;
+  overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; display: flex;
 }
 .event-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(111,191,217,0.2); }
-
 .event-stripe { width: 4px; flex-shrink: 0; }
 .event-card[data-member="SHIHO"] .event-stripe { background: var(--shiho); }
 .event-card[data-member="KUMI"]  .event-stripe { background: var(--kumi); }
 .event-card[data-member="MIHO"]  .event-stripe { background: var(--miho); }
 .event-card[data-member="KYOKO"] .event-stripe { background: var(--kyoko); }
-.event-card[data-member="MIPAN"] .event-stripe { background: var(--MIPAN); }
-
+.event-card[data-member="MIPAN"] .event-stripe { background: var(--mipan); }
 .event-inner { padding: 14px 16px; flex: 1; min-width: 0; }
-
-.event-meta {
-  display: flex; align-items: center; gap: 7px;
-  margin-bottom: 6px; flex-wrap: wrap;
-}
-
-.event-member-chip {
-  font-size: 10px; font-weight: 700;
-  padding: 2px 9px; border-radius: 10px; letter-spacing: 0.05em;
-}
+.event-meta { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; flex-wrap: wrap; }
+.event-member-chip { font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 10px; letter-spacing: 0.05em; }
 .event-card[data-member="SHIHO"] .event-member-chip { background: var(--shiho-light); color: var(--shiho); }
 .event-card[data-member="KUMI"]  .event-member-chip { background: var(--kumi-light);  color: var(--kumi);  }
 .event-card[data-member="MIHO"]  .event-member-chip { background: var(--miho-light);  color: var(--miho-text); }
 .event-card[data-member="KYOKO"] .event-member-chip { background: var(--kyoko-light); color: var(--kyoko); }
-.event-card[data-member="MIPAN"] .event-member-chip { background: var(--MIPAN-light); color: var(--MIPAN-text); }
-
-.event-category {
-  font-size: 10px; padding: 2px 9px; border-radius: 10px;
-  background: #f0f4f8; color: var(--text-soft); font-weight: 500;
-}
-
+.event-card[data-member="MIPAN"] .event-member-chip { background: var(--mipan-light); color: var(--mipan-text); }
+.event-category { font-size: 10px; padding: 2px 9px; border-radius: 10px; background: #f0f4f8; color: var(--text-soft); font-weight: 500; }
 .event-time { font-size: 11px; color: var(--text-soft); font-weight: 600; margin-left: auto; }
-
 .event-title { font-size: 15px; font-weight: 600; line-height: 1.55; color: var(--text); margin-bottom: 5px; }
 .event-note  { font-size: 12px; color: var(--text-soft); margin-bottom: 5px; line-height: 1.5; }
 .event-link  { font-size: 11px; color: var(--miho-text); text-decoration: none; word-break: break-all; opacity: 0.8; display: block; }
 .event-link:hover { opacity: 1; text-decoration: underline; }
 
-/* ── PANELS ── */
-.panel {
-  background: var(--white);
-  border-radius: var(--radius);
-  padding: 22px 24px;
-  box-shadow: 0 1px 8px rgba(111,191,217,0.12);
-  margin-top: 28px;
-}
+.panel { background: var(--white); border-radius: var(--radius); padding: 22px 24px; box-shadow: 0 1px 8px rgba(111,191,217,0.12); margin-top: 28px; }
 .panel-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 16px; letter-spacing: 0.06em; }
 
 .sub-list { display: flex; flex-direction: column; gap: 12px; }
 .sub-item { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.sub-color-bar {
-  display: flex; border-radius: 4px; overflow: hidden;
-  flex-shrink: 0; width: 28px; height: 18px;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
-}
+.sub-color-bar { display: flex; border-radius: 4px; overflow: hidden; flex-shrink: 0; width: 28px; height: 18px; box-shadow: 0 0 0 1px rgba(0,0,0,0.1); }
 .sub-color-bar span { flex: 1; display: block; }
 .sub-name { font-size: 13px; width: 96px; flex-shrink: 0; font-weight: 500; }
-.sub-btn {
-  font-size: 11px; padding: 5px 20px; border-radius: 12px;
-  text-decoration: none; font-weight: 500; border: 1.5px solid;
-  transition: opacity 0.15s; white-space: nowrap;
-}
+.sub-btn { font-size: 11px; padding: 5px 20px; border-radius: 12px; text-decoration: none; font-weight: 500; border: 1.5px solid; transition: opacity 0.15s; white-space: nowrap; }
 .sub-btn:hover { opacity: 0.7; }
 
-/* ── 🌟 新增：問卷區塊專用樣式 ── */
 .form-panel-box {
   background: linear-gradient(135deg, #f0f7ff 0%, #e8f3ff 100%);
-  border: 1px dashed #a3c7f5;
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
+  border: 1px dashed #a3c7f5; border-radius: var(--radius-sm); padding: 16px;
+  display: flex; justify-content: space-between; align-items: center; gap: 14px;
 }
 .form-panel-text { font-size: 13px; line-height: 1.5; color: #2a4a73; }
 .form-panel-btn {
@@ -273,94 +146,66 @@ main {
 .form-panel-btn:hover { opacity: 0.9; }
 
 .output-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
-
-.output-filter {
-  display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px;
-  padding-bottom: 12px; border-bottom: 1px solid var(--border);
-  align-items: center;
-}
+.output-filter { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); align-items: center; }
 .output-filter-label { font-size: 11px; color: var(--text-soft); margin-right: 4px; }
-
 .out-member-btn {
-  padding: 5px 14px; border-radius: 16px;
-  border: 1.5px solid var(--border);
-  font-size: 11px; font-weight: 500;
-  cursor: pointer; background: transparent; color: var(--text-soft);
-  font-family: 'Noto Sans JP', sans-serif;
-  transition: all 0.15s;
+  padding: 5px 14px; border-radius: 16px; border: 1.5px solid var(--border);
+  font-size: 11px; font-weight: 500; cursor: pointer; background: transparent; color: var(--text-soft);
+  font-family: 'Noto Sans JP', sans-serif; transition: all 0.15s;
 }
 .out-member-btn[data-member="all"].active  { background: var(--text); color: #fff; border-color: var(--text); }
 .out-member-btn[data-member="SHIHO"].active { background: var(--shiho); color: #fff; border-color: var(--shiho); }
 .out-member-btn[data-member="KUMI"].active  { background: var(--kumi);  color: #fff; border-color: var(--kumi);  }
 .out-member-btn[data-member="MIHO"].active  { background: var(--miho);  color: #fff; border-color: var(--miho);  }
 .out-member-btn[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
-.out-member-btn[data-member="MIPAN"].active { background: var(--MIPAN); color: #333; border-color: var(--MIPAN); }
+.out-member-btn[data-member="MIPAN"].active { background: var(--mipan); color: #333; border-color: var(--mipan); }
 
 .range-select {
-  padding: 8px 14px; border-radius: 20px;
-  border: 1.5px solid var(--border);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 12px; background: #f4fafd; color: var(--text);
+  padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+  font-family: 'Noto Sans JP', sans-serif; font-size: 12px; background: #f4fafd; color: var(--text);
   cursor: pointer; outline: none;
 }
-
 .out-btn {
-  padding: 8px 18px; border-radius: 20px; border: none;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  font-family: 'Noto Sans JP', sans-serif;
-  transition: opacity 0.15s; letter-spacing: 0.04em;
+  padding: 8px 18px; border-radius: 20px; border: none; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: 'Noto Sans JP', sans-serif; transition: opacity 0.15s; letter-spacing: 0.04em;
 }
 .out-btn:hover { opacity: 0.8; }
 .out-btn-text { background: var(--text); color: white; }
 .out-btn-card { background: linear-gradient(135deg, var(--miho), #0234b3); color: white; }
 
 .output-result {
-  background: #f4fafd; border-radius: var(--radius-sm);
-  padding: 16px; font-size: 13px; line-height: 1.9;
-  white-space: pre-wrap; display: none; position: relative;
+  background: #f4fafd; border-radius: var(--radius-sm); padding: 16px; font-size: 13px;
+  line-height: 1.9; white-space: pre-wrap; display: none; position: relative;
   border: 1px solid var(--border); margin-top: 4px;
 }
 .copy-btn {
-  position: absolute; top: 10px; right: 10px;
-  padding: 4px 12px; background: var(--white);
-  border: 1px solid var(--border); border-radius: 8px;
-  font-size: 11px; cursor: pointer;
+  position: absolute; top: 10px; right: 10px; padding: 4px 12px; background: var(--white);
+  border: 1px solid var(--border); border-radius: 8px; font-size: 11px; cursor: pointer;
 }
 .copy-btn:hover { background: var(--sky-bg); }
 
-/* ── CARD OVERLAY ── */
 #card-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,20,40,0.7); z-index: 200;
+  display: none; position: fixed; inset: 0; background: rgba(10,20,40,0.7); z-index: 200;
   align-items: center; justify-content: center; padding: 20px;
 }
 #card-overlay.show { display: flex; }
-
 .card-modal {
-  background: white; border-radius: 16px; padding: 24px;
-  max-width: 440px; width: 100%;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
-  max-height: 90vh; overflow-y: auto;
+  background: white; border-radius: 16px; padding: 24px; max-width: 440px; width: 100%;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;
 }
 .card-modal-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
 #schedule-canvas { width: 100%; border-radius: 10px; display: block; margin-bottom: 14px; }
 .card-actions { display: flex; gap: 10px; }
 .card-dl-btn {
-  flex: 1; padding: 10px; border-radius: 10px; border: none;
-  background: var(--text); color: white; font-size: 13px; font-weight: 600;
-  cursor: pointer; font-family: 'Noto Sans JP', sans-serif;
+  flex: 1; padding: 10px; border-radius: 10px; border: none; background: var(--text);
+  color: white; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans JP', sans-serif;
 }
 .card-close-btn {
-  padding: 10px 18px; border-radius: 10px;
-  border: 1.5px solid var(--border); background: transparent;
+  padding: 10px 18px; border-radius: 10px; border: 1.5px solid var(--border); background: transparent;
   font-size: 13px; cursor: pointer; color: var(--text-soft);
 }
 
-/* ── FAB CONTAINER ── */
-.fab-container {
-  position: fixed; right: 24px; bottom: 24px; z-index: 150;
-  display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
-}
+.fab-container { position: fixed; right: 24px; bottom: 24px; z-index: 150; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
 .fab-menu {
   background: var(--white); border-radius: var(--radius); padding: 8px 0;
   box-shadow: 0 4px 24px rgba(10,30,60,0.15), 0 0 0 1px rgba(111,191,217,0.1);
@@ -376,8 +221,7 @@ main {
 }
 .fab-item:hover { background: var(--miho-light); color: var(--miho-text); }
 .fab-main-btn {
-  width: 56px; height: 56px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--miho), #0234b3);
+  width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--miho), #0234b3);
   border: none; cursor: pointer; box-shadow: 0 4px 16px rgba(2,52,179,0.3);
   display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 22px;
 }
@@ -390,165 +234,66 @@ main {
 .fab-container.open .fab-icon span:nth-child(2) { opacity: 0; }
 .fab-container.open .fab-icon span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-/* ── OTHER MEMBERS TAB ── */
 .tab-others {
-  padding: 7px 18px;
-  border-radius: 20px;
-  border: 1.5px solid var(--text-soft);
-  font-size: 12px; font-weight: 500;
-  cursor: pointer;
-  transition: all 0.18s;
-  background: transparent;
-  color: var(--text-soft);
-  font-family: 'Noto Sans JP', sans-serif;
-  letter-spacing: 0.04em;
+  padding: 7px 18px; border-radius: 20px; border: 1.5px solid var(--text-soft);
+  font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.18s;
+  background: transparent; color: var(--text-soft); font-family: 'Noto Sans JP', sans-serif; letter-spacing: 0.04em;
 }
 .tab-others:hover { background: var(--white); }
 
-/* ── OTHERS MODAL ── */
-.others-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,20,40,0.6); z-index: 300;
-  align-items: center; justify-content: center; padding: 20px;
-}
+.others-overlay { display: none; position: fixed; inset: 0; background: rgba(10,20,40,0.6); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
 .others-overlay.show { display: flex; }
-.others-modal {
-  background: var(--white); border-radius: 16px;
-  width: 100%; max-width: 400px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-  overflow: hidden; max-height: 90vh; overflow-y: auto;
-}
-.others-rainbow {
-  height: 6px;
-  background: linear-gradient(to right,#ffb3d1,#ffcc80,#fff176,#a5d6a7,#6fbfd9,#0234b3,#800080);
-}
+.others-modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 8px 40px rgba(0,0,0,0.25); overflow: hidden; max-height: 90vh; overflow-y: auto; }
+.others-rainbow { height: 6px; background: linear-gradient(to right,#ffb3d1,#ffcc80,#fff176,#a5d6a7,#6fbfd9,#0234b3,#800080); }
 .others-body { padding: 20px 22px; }
-.others-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 6px;
-}
+.others-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .others-title { font-size: 15px; font-weight: 700; color: var(--text); }
-.others-close {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: none; background: #f0f4f8; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; color: var(--text-soft); transition: background 0.15s;
-}
+.others-close { width: 28px; height: 28px; border-radius: 50%; border: none; background: #f0f4f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-soft); transition: background 0.15s; }
 .others-close:hover { background: var(--sky-mid); }
 .others-desc { font-size: 12px; color: var(--text-soft); line-height: 1.7; margin-bottom: 18px; }
-.others-gen {
-  margin-bottom: 14px;
-}
-.others-gen-title {
-  display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
-}
-.others-gen-label {
-  font-size: 10px; font-weight: 700; color: var(--text-soft);
-  letter-spacing: 0.12em;
-}
+.others-gen { margin-bottom: 14px; }
+.others-gen-title { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.others-gen-label { font-size: 10px; font-weight: 700; color: var(--text-soft); letter-spacing: 0.12em; }
 .others-gen-line { flex: 1; height: 1px; background: var(--border); }
-.others-member-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 6px 4px; border-radius: 8px; transition: background 0.12s;
-}
+.others-member-row { display: flex; align-items: center; gap: 10px; padding: 6px 4px; border-radius: 8px; transition: background 0.12s; }
 .others-member-row:hover { background: var(--sky-bg); }
-.others-color-bar {
-  display: flex; border-radius: 4px; overflow: hidden;
-  flex-shrink: 0; width: 24px; height: 16px;
-  box-shadow: 0 0 0 0.5px rgba(0,0,0,0.12);
-}
+.others-color-bar { display: flex; border-radius: 4px; overflow: hidden; flex-shrink: 0; width: 24px; height: 16px; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.12); }
 .others-color-bar span { flex: 1; display: block; }
 .others-member-name { font-size: 13px; color: var(--text); flex: 1; }
 .others-link {
-  font-size: 11px; color: var(--miho-text);
-  text-decoration: none; border: 1px solid var(--sky-mid);
-  border-radius: 8px; padding: 3px 10px; white-space: nowrap;
-  transition: background 0.12s;
+  font-size: 11px; color: var(--miho-text); text-decoration: none; border: 1px solid var(--sky-mid);
+  border-radius: 8px; padding: 3px 10px; white-space: nowrap; transition: background 0.12s;
 }
 .others-link:hover { background: var(--miho-light); }
-.others-footer {
-  border-top: 1px solid var(--border); padding-top: 12px;
-  font-size: 12px; color: var(--text-soft); line-height: 1.7;
-  margin-top: 4px;
-}
+.others-footer { border-top: 1px solid var(--border); padding-top: 12px; font-size: 12px; color: var(--text-soft); line-height: 1.7; margin-top: 4px; }
 .others-ig { color: var(--miho-text); text-decoration: none; font-weight: 500; }
 .others-ig:hover { text-decoration: underline; }
 
-/* ── DAY BLOCK ── */
 .day-block {
-  background: var(--white);
-  border-radius: var(--radius);
+  background: var(--white); border-radius: var(--radius);
   box-shadow: 0 1px 8px rgba(111,191,217,0.12), 0 0 0 1px rgba(111,191,217,0.08);
-  overflow: hidden;
-  margin-bottom: 10px;
+  overflow: hidden; margin-bottom: 10px;
 }
-.day-block .event-card {
-  border-radius: 0;
-  box-shadow: none;
-  margin-bottom: 0;
-}
-.day-divider {
-  height: 1px;
-  background: var(--border);
-  margin-left: 4px;
-}
+.day-block .event-card { border-radius: 0; box-shadow: none; margin-bottom: 0; }
+.day-divider { height: 1px; background: var(--border); margin-left: 4px; }
 
-/* ── ANNIVERSARY BADGE ── */
 .anniversary-badge {
-  font-size: 11px;
-  background: #fff8e1;
-  color: #b8860b;
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-weight: 500;
-  border: 0.5px solid #f0d060;
-  white-space: nowrap;
+  font-size: 11px; background: #fff8e1; color: #b8860b; padding: 2px 10px;
+  border-radius: 10px; font-weight: 500; border: 0.5px solid #f0d060; white-space: nowrap;
 }
+.anniversary-card { display: flex; overflow: hidden; }
+.anniversary-stripe { width: 4px; background: #87CEEB; flex-shrink: 0; }
+.anniversary-inner { padding: 12px 16px; flex: 1; background: #eef8fd; }
+.anniversary-label { font-size: 10px; color: #4a8aaa; font-weight: 500; margin-bottom: 3px; }
+.anniversary-title { font-size: 14px; font-weight: 600; color: #1a4a6a; }
 
-/* ── ANNIVERSARY CARD (無行程當天) ── */
-.anniversary-card {
-  display: flex;
-  overflow: hidden;
-}
-.anniversary-stripe {
-  width: 4px;
-  background: #87CEEB;
-  flex-shrink: 0;
-}
-.anniversary-inner {
-  padding: 12px 16px;
-  flex: 1;
-  background: #eef8fd;
-}
-.anniversary-label {
-  font-size: 10px;
-  color: #4a8aaa;
-  font-weight: 500;
-  margin-bottom: 3px;
-}
-.anniversary-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a4a6a;
-}
-
-/* ── FOOTER COUNTDOWN ── */
 .footer-countdown {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 13px;
-  color: var(--text-soft);
-  letter-spacing: 0.08em;
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  justify-content: center;
+  font-family: 'Noto Serif JP', serif; font-size: 13px; color: var(--text-soft);
+  letter-spacing: 0.08em; display: flex; align-items: baseline; gap: 4px; justify-content: center;
 }
-.footer-countdown-days {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.02em;
-}
+.footer-countdown-days { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
+
+@media (max-width: 580px) {
   .site-title { font-size: 17px; }
   .event-title { font-size: 14px; }
   .header-inner { padding: 14px 14px 12px; }
@@ -557,25 +302,6 @@ main {
   .fab-main-btn { width: 50px; height: 50px; font-size: 18px; }
   .form-panel-box { flex-direction: column; text-align: center; }
   .form-panel-btn { width: 100%; }
-}
-
-/* ── DAY BLOCK ── */
-.day-block {
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: 0 1px 8px rgba(111,191,217,0.12), 0 0 0 1px rgba(111,191,217,0.08);
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-.day-block .event-card {
-  border-radius: 0;
-  box-shadow: none;
-  margin-bottom: 0;
-}
-.day-divider {
-  height: 1px;
-  background: var(--border);
-  margin-left: 4px;
 }
 </style>
 </head>
@@ -610,7 +336,6 @@ main {
     <div class="loading">載入行程中...</div>
   </div>
 
-  <!-- Subscribe Panel -->
   <div class="panel" id="panel-subscribe">
     <div class="panel-title">📅 訂閱日曆</div>
     <div class="sub-list">
@@ -625,7 +350,7 @@ main {
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=1bb7b20d3c8ff16bc24f43f9ba9e01c99ac6e30440ebc6b11eca7cf5b2f8c18e%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#800080;border-color:#800080">查看 / 訂閱日曆</a>
       </div>
       <div class="sub-item">
-        <div class="sub-color-bar" style="box-shadow:0 0 0 1px #ccc"><span style="background:#ffffff"></span><span style="background:#ffffff"></span></div>
+        <div class="sub-color-bar"><span style="background:#000000"></span><span style="background:#000000"></span></div>
         <div class="sub-name">齊藤京子</div>
         <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=ecb6f0c79530e20fb6bacaec5b6bdd8cc90a13628540ccd4e6a3b0a0f8f4da83%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#000000;border-color:#000000">查看 / 訂閱日曆</a>
       </div>
@@ -642,7 +367,6 @@ main {
     </div>
   </div>
 
-  <!-- 🌟 新增：最下方的行程投稿區塊 -->
   <div class="panel" id="panel-contribute">
     <div class="panel-title">✍️ 行程情報募集</div>
     <div class="form-panel-box">
@@ -654,7 +378,6 @@ main {
     </div>
   </div>
 
-  <!-- Output Panel -->
   <div class="panel" id="panel-output">
     <div class="panel-title">📋 輸出行程</div>
     <div class="output-filter">
@@ -684,7 +407,6 @@ main {
   </div>
 </main>
 
-<!-- 🌟 FAB 懸浮按鈕：已在 Menu 內新增「✍️ 投稿行程」按鈕，點擊直接另開分頁 -->
 <div class="fab-container" id="fab-container">
   <div class="fab-menu">
     <button class="fab-item" onclick="scrollToPanel('panel-subscribe')">📅 訂閱日曆</button>
@@ -696,7 +418,6 @@ main {
   </button>
 </div>
 
-<!-- Card overlay -->
 <div id="card-overlay" onclick="closeCard(event)">
   <div class="card-modal">
     <div class="card-modal-title">行程圖卡（點下載儲存）</div>
@@ -708,11 +429,9 @@ main {
   </div>
 </div>
 
-<!-- 修正 3：加入供 qrcode.js 渲染圖片所需的隱藏暫存容器 -->
 <div id="qr-tmp" style="display:none;"></div>
 
 <script>
-// 修正 2：補上 Canvas 渲染中被呼叫卻未宣告的 SITE_URL 與 MINCHO 變數
 const SITE_URL = 'https://hinatazaka46og.github.io/hnz-og-cal/';
 const MINCHO = "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', 'YuMincho', 'MS Mincho', Georgia, serif";
 
@@ -724,7 +443,7 @@ const MEMBER_INFO = {
   SHIHO: { name:'加藤史帆',   color:'#0234b3', light:'#e8eaf6', textColor:'#0234b3' },
   KUMI:  { name:'佐々木久美', color:'#800080', light:'#f5e5f5', textColor:'#800080' },
   MIHO:  { name:'渡邉美穂',  color:'#6fbfd9', light:'#e8f6fb', textColor:'#1a7a9a' },
-  KYOKO: { name:'齊藤京子',  color:'#000000', light:'#f0f2f5', textColor:'#40454c' },
+  KYOKO: { name:'齊藤京子',  color:'#000000', light:'#f0f2f5', textColor:'#000000' },
   MIPAN: { name:'佐々木美玲', color:'#f1c40f', light:'#fefde8', textColor:'#7a6000' },
 };
 
@@ -742,7 +461,6 @@ function scrollToPanel(id) {
 }
 document.addEventListener('click', () => { document.getElementById('fab-container').classList.remove('open'); });
 
-// ── ANNIVERSARY ──
 let anniversaryData = [];
 
 async function fetchAnniversary() {
@@ -878,7 +596,6 @@ function renderSchedule() {
   const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-3); cutoff.setHours(0,0,0,0);
   const future = mergeCoAppearances(withDate.filter(e => e._date >= cutoff));
 
-  // 收集有行程的日期
   const groups = {};
   future.forEach(e => {
     const k = e._date.toDateString();
@@ -886,7 +603,6 @@ function renderSchedule() {
     groups[k].events.push(e);
   });
 
-  // 收集有紀念日但無行程的日期，加進 groups
   const now = new Date(); now.setHours(0,0,0,0);
   const lookAhead = new Date(now); lookAhead.setDate(now.getDate() + 30);
   for (let d = new Date(now); d <= lookAhead; d.setDate(d.getDate()+1)) {
@@ -897,7 +613,6 @@ function renderSchedule() {
     }
   }
 
-  // 排序
   const sortedGroups = Object.values(groups).sort((a,b) => a.date - b.date);
 
   let html = '';
@@ -914,13 +629,8 @@ function renderSchedule() {
       html += '<div class="day-block">';
 
       if (group.anniversaryOnly) {
-        // 無行程當天：只顯示紀念日卡片
         html += renderAnniversaryCards(anniversaries);
       } else {
-        // 有行程：紀念日卡片放第一筆（如果有的話）
-        if (anniversaries.length > 0 && isToday(group.date)) {
-          // 今天有紀念日：badge 已顯示在 header，不重複顯示卡片
-        }
         group.events.forEach((e, idx) => {
           if (idx > 0) html += '<div class="day-divider"></div>';
           html += renderCard(e, multiMember);
@@ -945,15 +655,35 @@ function renderSchedule() {
 
 function renderCard(e, showMember) {
   const timeStr = formatTime(e.time);
-  const info = MEMBER_INFO[e._member];
-  const kyokoStyle = e._member === 'KYOKO'
-    ? `style="background:${info.light};color:${info.color};outline:1.5px solid ${info.color};outline-offset:-1px"`
-    : `style="background:${info.light};color:${info.color}"`;
-  return `<div class="event-card" data-member="${e._member}">
-    <div class="event-stripe"></div>
+  const members = e._members || [e._member];
+  const isSingle = members.length === 1;
+
+  let stripeStyle;
+  if (isSingle) {
+    stripeStyle = `background:${MEMBER_INFO[members[0]].color}`;
+  } else {
+    const colors = members.map(m => MEMBER_INFO[m].color);
+    const pct = 100 / colors.length;
+    const stops = colors.map((c, i) => `${c} ${i*pct}%, ${c} ${(i+1)*pct}%`).join(', ');
+    stripeStyle = `background:linear-gradient(to bottom,${stops})`;
+  }
+
+  let chipHtml = '';
+  if (showMember) {
+    chipHtml = members.map(m => {
+      const info = MEMBER_INFO[m];
+      const kyokoStyle = m === 'KYOKO'
+        ? `style="background:${info.light};color:${info.color};border:1.5px solid ${info.color}"`
+        : `style="background:${info.light};color:${info.color}"`;
+      return `<span class="event-member-chip" ${kyokoStyle}>${info.name}</span>`;
+    }).join('');
+  }
+
+  return `<div class="event-card" data-member="${members[0]}">
+    <div class="event-stripe" style="${stripeStyle}"></div>
     <div class="event-inner">
       <div class="event-meta">
-        ${showMember ? `<span class="event-member-chip" ${kyokoStyle}>${info.name}</span>` : ''}
+        ${chipHtml}
         ${e.category ? `<span class="event-category">${e.category}</span>` : ''}
         ${timeStr ? `<span class="event-time">⏰ ${timeStr}</span>` : ''}
       </div>
@@ -971,7 +701,6 @@ function getOutLabel() {
   return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・');
 }
 
-// CP 組合客製化標題（根據實際出現的成員）
 function getCpTitle(actualMembers) {
   const members = actualMembers || [...outSelected];
   const set = new Set(members);
@@ -1012,7 +741,6 @@ function getRangeEvents() {
     end = new Date(now.getFullYear(), now.getMonth()+2, 0, 23,59,59);
   }
 
-  // 近七天和近兩週從今天起算，本週/本月顯示完整範圍
   const filterFrom = (range === 'sevenDays' || range === 'twoweeks') ? today : start;
   return getOutFiltered()
     .filter(e => e._date && e._date >= filterFrom && e._date >= start && e._date <= end)
@@ -1042,11 +770,9 @@ function getRangeLabel() {
 function generateTextOutput() {
   const inRange = getRangeEvents();
   const rangeLabel = getRangeLabel();
-  const memberLabel = getOutLabel();
 
   if (inRange.length === 0) { document.getElementById('output-text').textContent = '此期間暫無行程'; document.getElementById('output-result').style.display = 'block'; return; }
 
-  // 實際出現在行程裡的成員
   const actualMembers = [...new Set(inRange.map(e => e._member))];
   const cpTitle = getCpTitle(actualMembers);
   const isSingle = actualMembers.length === 1;
@@ -1066,7 +792,6 @@ function generateTextOutput() {
 
 function copyOutput() { const text = document.getElementById('output-text').textContent; navigator.clipboard.writeText(text).then(() => { const btn = document.querySelector('.copy-btn'); btn.textContent = '已複製 ✓'; setTimeout(() => btn.textContent = '複製', 2000); }); }
 
-// ── CARD OUTPUT ──
 let qrImageEl = null;
 
 function getQRImage(cb) {
@@ -1080,7 +805,6 @@ function getQRImage(cb) {
 function generateCardOutput() {
   const inRange = getRangeEvents();
   if (inRange.length === 0) { alert('此期間暫無行程'); return; }
-  // 圖卡做共演合併
   const merged = mergeCoAppearances(inRange);
   getQRImage(qrEl => drawCard(merged, qrEl));
 }
@@ -1114,20 +838,15 @@ function drawCard(inRange, qrEl) {
   const Y0 = BAND_H;
 
   const rangeLabel = getRangeLabel();
-  
-  // 🌟 這裡完全保留你原本的邏輯
   const actualMembers = [...new Set(inRange.map(e => e._member))];
   const cpTitle = getCpTitle(actualMembers);
   const isSingle = actualMembers.length === 1;
-  
-  // ✨ 修正：副標題的成員清單改由實際行程內的成員 (actualMembers) 來動態決定，不再用 memberLabel
   const actualMemberLabel = actualMembers.map(m => MEMBER_INFO[m]?.name || m).join('・');
 
   ctx.fillStyle = '#1a2a3a';
   ctx.font = `bold 30px ${MINCHO}`;
   ctx.fillText(cpTitle, PAD, Y0+50);
 
-  // ✨ 修正：將原本的 memberLabel 換成上面新組合的 actualMemberLabel
   const subtitleText = isSingle ? rangeLabel : `${rangeLabel}｜${actualMemberLabel}`;
   ctx.font = '13px sans-serif'; ctx.fillStyle = '#5a7a8a';
   let sub = subtitleText;
@@ -1152,7 +871,6 @@ function drawCard(inRange, qrEl) {
       ctx.fill();
     }
 
-    // 左側色條：多人漸層
     if (members.length > 1) {
       const stripeH = ROW_H - 10;
       const segH = stripeH / members.length;
@@ -1174,7 +892,6 @@ function drawCard(inRange, qrEl) {
       ctx.fillText('▸ '+ds, PAD-4, y+15); lastDate = ds;
     }
 
-    // 成員膠囊（多人時並排）
     let chipEndX = PAD;
     if (!isSingle) {
       ctx.font = 'bold 10px sans-serif';
@@ -1182,20 +899,16 @@ function drawCard(inRange, qrEl) {
         const mInfo = MEMBER_INFO[m];
         const chipW = ctx.measureText(mInfo.name).width + 20;
         if (m === 'KYOKO') {
-          ctx.strokeStyle = mInfo.color; ctx.lineWidth = 2;
-          ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(chipEndX-1, y+20, chipW+2, 20, 11);
-          else ctx.rect(chipEndX-1, y+20, chipW+2, 20);
-          ctx.stroke();
+          // 京子：單層黑色框
           ctx.fillStyle = mInfo.light;
           ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(chipEndX+2, y+23, chipW-4, 14, 7);
-          else ctx.rect(chipEndX+2, y+23, chipW-4, 14);
+          if (ctx.roundRect) ctx.roundRect(chipEndX, y+21, chipW, 18, 9);
+          else ctx.rect(chipEndX, y+21, chipW, 18);
           ctx.fill();
-          ctx.strokeStyle = mInfo.color; ctx.lineWidth = 0.8;
+          ctx.strokeStyle = mInfo.color; ctx.lineWidth = 1.5;
           ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(chipEndX+2, y+23, chipW-4, 14, 7);
-          else ctx.rect(chipEndX+2, y+23, chipW-4, 14);
+          if (ctx.roundRect) ctx.roundRect(chipEndX, y+21, chipW, 18, 9);
+          else ctx.rect(chipEndX, y+21, chipW, 18);
           ctx.stroke();
         } else {
           ctx.fillStyle = mInfo.light;
@@ -1290,7 +1003,6 @@ async function init() {
 init();
 </script>
 
-<!-- Others Modal -->
 <div class="others-overlay" id="others-overlay" onclick="closeOthers(event)">
   <div class="others-modal">
     <div class="others-rainbow"></div>
@@ -1301,7 +1013,6 @@ init();
       </div>
       <p class="others-desc">以下成員的個人官網已提供完整行程資訊，可直接前往查詢：</p>
 
-      <!-- 一期生 -->
       <div class="others-gen">
         <div class="others-gen-title">
           <span class="others-gen-label">一期生</span>
@@ -1319,7 +1030,6 @@ init();
         </div>
       </div>
 
-      <!-- 二期生 -->
       <div class="others-gen">
         <div class="others-gen-title">
           <span class="others-gen-label">二期生</span>
@@ -1363,7 +1073,6 @@ init();
 </footer>
 
 <script>
-// 倒數計算：2029/3/27
 (function() {
   const target = new Date('2029-03-27T00:00:00+09:00');
   const now = new Date();
