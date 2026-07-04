@@ -40,6 +40,9 @@
   --mipan: #f1c40f;
   --mipan-light: #fefde8;
   --mipan-text: #7a6000;
+  --nibu: #f39c12;
+  --nibu-light: #fdf0dc;
+  --nibu-text: #8a5400;
   --sky-bg: #dff0f7;
   --sky-mid: #b8dcea;
   --white: #ffffff;
@@ -84,6 +87,7 @@ header {
 .tab[data-member="MIHO"].active  { background: var(--miho);  color: #fff; border-color: var(--miho);  }
 .tab[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
 .tab[data-member="MIPAN"].active { background: var(--mipan); color: #333; border-color: var(--mipan); }
+.tab[data-member="NIBU"].active  { background: var(--nibu);  color: #fff; border-color: var(--nibu);  }
 .tab-check { display: none; font-size: 10px; margin-right: 3px; }
 .tab.active .tab-check { display: inline; }
 
@@ -115,6 +119,7 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 .event-card[data-member="MIHO"]  .event-stripe { background: var(--miho); }
 .event-card[data-member="KYOKO"] .event-stripe { background: var(--kyoko); }
 .event-card[data-member="MIPAN"] .event-stripe { background: var(--mipan); }
+.event-card[data-member="NIBU"]  .event-stripe { background: var(--nibu); }
 .event-inner { padding: 14px 16px; flex: 1; min-width: 0; }
 .event-meta { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; flex-wrap: wrap; }
 .event-member-chip { font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 10px; letter-spacing: 0.05em; }
@@ -123,6 +128,7 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 .event-card[data-member="MIHO"]  .event-member-chip { background: var(--miho-light);  color: var(--miho-text); }
 .event-card[data-member="KYOKO"] .event-member-chip { background: var(--kyoko-light); color: var(--kyoko); }
 .event-card[data-member="MIPAN"] .event-member-chip { background: var(--mipan-light); color: var(--mipan-text); }
+.event-card[data-member="NIBU"]  .event-member-chip { background: var(--nibu-light);  color: var(--nibu-text); }
 .event-category { font-size: 10px; padding: 2px 9px; border-radius: 10px; background: #f0f4f8; color: var(--text-soft); font-weight: 500; }
 .event-time { font-size: 11px; color: var(--text-soft); font-weight: 600; margin-left: auto; }
 .event-title { font-size: 15px; font-weight: 600; line-height: 1.55; color: var(--text); margin-bottom: 5px; }
@@ -182,6 +188,7 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 .out-member-btn[data-member="MIHO"].active  { background: var(--miho);  color: #fff; border-color: var(--miho);  }
 .out-member-btn[data-member="KYOKO"].active { background: var(--kyoko); color: #fff; border-color: var(--kyoko); }
 .out-member-btn[data-member="MIPAN"].active { background: var(--mipan); color: #333; border-color: var(--mipan); }
+.out-member-btn[data-member="NIBU"].active  { background: var(--nibu);  color: #fff; border-color: var(--nibu);  }
 
 .range-select {
   padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border);
@@ -367,11 +374,7 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
     <div class="tabs-row">
       <span class="tabs-label">顯示：</span>
       <button class="tab active" data-member="all"><span class="tab-check">✓</span>全員</button>
-      <button class="tab" data-member="SHIHO"><span class="tab-check">✓</span>加藤史帆</button>
-      <button class="tab" data-member="KUMI"><span class="tab-check">✓</span>佐々木久美</button>
-      <button class="tab" data-member="KYOKO"><span class="tab-check">✓</span>齊藤京子</button>
-      <button class="tab" data-member="MIPAN"><span class="tab-check">✓</span>佐々木美玲</button>
-      <button class="tab" data-member="MIHO"><span class="tab-check">✓</span>渡邉美穂</button>
+      <!-- 成員頁籤由試算表的 MEMBERS 分頁自動產生 -->
       <button class="tab-others" onclick="openOthers()">其他成員 ↗</button>
     </div>
   </div>
@@ -388,36 +391,8 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 
   <div class="panel" id="panel-subscribe">
     <div class="panel-title">📅 訂閱日曆</div>
-    <div class="sub-list">
-      <div class="sub-item">
-        <div class="sub-color-bar"><span style="background:#0234b3"></span><span style="background:#0234b3"></span></div>
-        <div class="sub-name">加藤史帆</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=a0bac1c23774a0ca20fa13475a1ffd19106cdcab9f7aa74fe1af7b3a3217ee72%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#0234b3;border-color:#0234b3">查看 / 訂閱日曆</a>
-      </div>
-      <div class="sub-item">
-        <div class="sub-color-bar"><span style="background:#800080"></span><span style="background:#b0d0e8"></span></div>
-        <div class="sub-name">佐々木久美</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=1bb7b20d3c8ff16bc24f43f9ba9e01c99ac6e30440ebc6b11eca7cf5b2f8c18e%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#800080;border-color:#800080">查看 / 訂閱日曆</a>
-      </div>
-      <div class="sub-item">
-  <div class="sub-color-bar">
-    <span style="background:#ffffff"></span>
-    <span style="background:#ffffff"></span>
-  </div>
-  <div class="sub-name">齊藤京子</div>
-  <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=ecb6f0c79530e20fb6bacaec5b6bdd8cc90a13628540ccd4e6a3b0a0f8f4da83%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#000000;border-color:#000000">查看 / 訂閱日曆</a>
-</div>
-      <div class="sub-item">
-        <div class="sub-color-bar"><span style="background:#f1c40f"></span><span style="background:#f1c40f"></span></div>
-        <div class="sub-name">佐々木美玲</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=b5e9566a35c892328f752d6d2a91006ad4f2ad9893daec535caadedec2a44fe2%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#7a6000;border-color:#f1c40f">查看 / 訂閱日曆</a>
-      </div>
-      <div class="sub-item">
-        <div class="sub-color-bar"><span style="background:#ffffff"></span><span style="background:#b0d0e8"></span></div>
-        <div class="sub-name">渡邉美穂</div>
-        <a class="sub-btn" href="https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo" target="_blank" style="color:#1a7a9a;border-color:#b0d0e8">查看 / 訂閱日曆</a>
-      </div>
-    </div>
+    <!-- 訂閱清單由試算表的 MEMBERS 分頁自動產生 -->
+    <div class="sub-list" id="sub-list"></div>
   </div>
 
   <div class="panel" id="panel-contribute">
@@ -433,14 +408,10 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 
   <div class="panel" id="panel-output">
     <div class="panel-title">📋 輸出行程</div>
-    <div class="output-filter">
+    <div class="output-filter" id="output-filter">
       <span class="output-filter-label">成員：</span>
       <button class="out-member-btn active" data-member="all">全員</button>
-      <button class="out-member-btn" data-member="SHIHO">加藤史帆</button>
-      <button class="out-member-btn" data-member="KUMI">佐々木久美</button>
-      <button class="out-member-btn" data-member="KYOKO">齊藤京子</button>
-      <button class="out-member-btn" data-member="MIPAN">佐々木美玲</button>
-      <button class="out-member-btn" data-member="MIHO">渡邉美穂</button>
+      <!-- 成員按鈕由試算表的 MEMBERS 分頁自動產生 -->
     </div>
     <div class="output-controls">
       <select class="range-select" id="output-range">
@@ -489,8 +460,20 @@ const SITE_URL = 'https://hinatazaka46og.github.io/hnz-og-cal/';
 const MINCHO = "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', 'YuMincho', 'MS Mincho', Georgia, serif";
 
 const SHEET_ID = '1G70fvNSynS6p2YBo_SNsU8w0tnU8SUAp3De21hRYMSQ';
-const SHEETS = ['MIHO','KUMI','SHIHO','KYOKO','MIPAN'];
 const WEEKDAYS = ['日','一','二','三','四','五','六'];
+
+/* 成員名單改由試算表的 MEMBERS 分頁載入（順序＝顯示順序）。
+   讀不到 MEMBERS 分頁時，退回使用下面這份內建名單，網站照常運作。 */
+const DEFAULT_MEMBERS = [
+  { code:'SHIHO', name:'加藤史帆',  color:'#0234b3', light:'#e8eaf6', textColor:'#0234b3', pen1:'#0234b3', pen2:'#0234b3', calendar:'https://calendar.google.com/calendar/embed?src=a0bac1c23774a0ca20fa13475a1ffd19106cdcab9f7aa74fe1af7b3a3217ee72%40group.calendar.google.com&ctz=Asia%2FTokyo' },
+  { code:'KUMI',  name:'佐々木久美', color:'#800080', light:'#f5e5f5', textColor:'#800080', pen1:'#800080', pen2:'#b0d0e8', calendar:'https://calendar.google.com/calendar/embed?src=1bb7b20d3c8ff16bc24f43f9ba9e01c99ac6e30440ebc6b11eca7cf5b2f8c18e%40group.calendar.google.com&ctz=Asia%2FTokyo' },
+  { code:'KYOKO', name:'齊藤京子',  color:'#000000', light:'#f0f2f5', textColor:'#000000', pen1:'#ffffff', pen2:'#ffffff', calendar:'https://calendar.google.com/calendar/embed?src=ecb6f0c79530e20fb6bacaec5b6bdd8cc90a13628540ccd4e6a3b0a0f8f4da83%40group.calendar.google.com&ctz=Asia%2FTokyo' },
+  { code:'MIPAN', name:'佐々木美玲', color:'#f1c40f', light:'#fefde8', textColor:'#7a6000', pen1:'#f1c40f', pen2:'#f1c40f', calendar:'https://calendar.google.com/calendar/embed?src=b5e9566a35c892328f752d6d2a91006ad4f2ad9893daec535caadedec2a44fe2%40group.calendar.google.com&ctz=Asia%2FTokyo' },
+  { code:'MIHO',  name:'渡邉美穂',  color:'#6fbfd9', light:'#e8f6fb', textColor:'#1a7a9a', pen1:'#ffffff', pen2:'#b0d0e8', calendar:'https://calendar.google.com/calendar/embed?src=d03f10c60c7732ebbb2ce66dd9acc0dbe339a40064080421c751f5a6469e3982%40group.calendar.google.com&ctz=Asia%2FTokyo' },
+  { code:'NIBU',  name:'丹生明里',  color:'#f39c12', light:'#fdf0dc', textColor:'#8a5400', pen1:'#f39c12', pen2:'#f39c12', calendar:'https://calendar.google.com/calendar/embed?src=af5205b015269d9bdee7e1ad5c13c038faefeace26ad4574e8143554bda2a9da%40group.calendar.google.com&ctz=Asia%2FTokyo' },
+];
+
+let SHEETS = [];
 
 /* 安全處理：試算表資料來自開放投稿，顯示前一律當純文字處理，防止惡意內容被當成程式執行 */
 function esc(s) {
@@ -502,13 +485,86 @@ function safeUrl(u) {
   return /^https?:\/\//i.test(s) ? s : '';
 }
 
-const MEMBER_INFO = {
-  SHIHO: { name:'加藤史帆',   color:'#0234b3', light:'#e8eaf6', textColor:'#0234b3' },
-  KUMI:  { name:'佐々木久美', color:'#800080', light:'#f5e5f5', textColor:'#800080' },
-  MIHO:  { name:'渡邉美穂',  color:'#6fbfd9', light:'#e8f6fb', textColor:'#1a7a9a' },
-  KYOKO: { name:'齊藤京子',  color:'#000000', light:'#f0f2f5', textColor:'#000000' },
-  MIPAN: { name:'佐々木美玲', color:'#f1c40f', light:'#fefde8', textColor:'#7a6000' },
-};
+let MEMBER_INFO = {}; // 由 applyMembers() 依 MEMBERS 分頁內容填入
+
+/* 讀取 MEMBERS 分頁；失敗或空白時退回內建名單 */
+async function fetchMembers() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=MEMBERS`;
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    if (!json.table || !json.table.rows) return DEFAULT_MEMBERS;
+    const cols = json.table.cols.map(c => c.label);
+    const list = json.table.rows.map(row => {
+      const obj = {};
+      cols.forEach((col, i) => { const cell = row.c[i]; obj[col] = cell ? (cell.v !== null ? String(cell.v).trim() : '') : ''; });
+      return obj;
+    }).filter(r => r.code && r.name);
+    if (list.length === 0) return DEFAULT_MEMBERS;
+    return list.map(r => ({
+      code: r.code.toUpperCase(),
+      name: r.name,
+      color: r.color || '#5a7a8a',
+      light: r.light || '#f0f4f8',
+      textColor: r.textColor || r.color || '#5a7a8a',
+      pen1: r.pen1 || r.color || '#5a7a8a',
+      pen2: r.pen2 || r.pen1 || r.color || '#5a7a8a',
+      calendar: r.calendar || ''
+    }));
+  } catch (e) { return DEFAULT_MEMBERS; }
+}
+
+/* 判斷顏色深淺，決定按鈕選中時文字用深色還是白色 */
+function isLightColor(hex) {
+  const s = String(hex).replace('#', '');
+  if (s.length < 6) return false;
+  const r = parseInt(s.slice(0, 2), 16), g = parseInt(s.slice(2, 4), 16), b = parseInt(s.slice(4, 6), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 186;
+}
+
+/* 依成員名單動態產生：頁籤、輸出按鈕、訂閱清單、按鈕選中配色 */
+function applyMembers(list) {
+  SHEETS = list.map(m => m.code);
+  MEMBER_INFO = {};
+  list.forEach(m => { MEMBER_INFO[m.code] = { name: m.name, color: m.color, light: m.light, textColor: m.textColor }; });
+
+  const css = list.map(m => {
+    const txt = isLightColor(m.color) ? '#333' : '#fff';
+    return `.tab[data-member="${m.code}"].active,.out-member-btn[data-member="${m.code}"].active{background:${m.color};color:${txt};border-color:${m.color};}`;
+  }).join('\n');
+  const styleEl = document.createElement('style');
+  styleEl.textContent = css;
+  document.head.appendChild(styleEl);
+
+  const othersBtn = document.querySelector('.tab-others');
+  list.forEach(m => {
+    const b = document.createElement('button');
+    b.className = 'tab';
+    b.dataset.member = m.code;
+    b.innerHTML = '<span class="tab-check">✓</span>' + esc(m.name);
+    othersBtn.parentNode.insertBefore(b, othersBtn);
+  });
+
+  const outFilter = document.getElementById('output-filter');
+  list.forEach(m => {
+    const b = document.createElement('button');
+    b.className = 'out-member-btn';
+    b.dataset.member = m.code;
+    b.textContent = m.name;
+    outFilter.appendChild(b);
+  });
+
+  document.getElementById('sub-list').innerHTML = list.filter(m => m.calendar).map(m => `
+    <div class="sub-item">
+      <div class="sub-color-bar"><span style="background:${esc(m.pen1)}"></span><span style="background:${esc(m.pen2)}"></span></div>
+      <div class="sub-name">${esc(m.name)}</div>
+      <a class="sub-btn" href="${esc(m.calendar)}" target="_blank" rel="noopener" style="color:${esc(m.textColor)};border-color:${esc(m.color)}">查看 / 訂閱日曆</a>
+    </div>`).join('');
+
+  setupViewTabs();
+  setupOutButtons();
+}
 
 let allEvents = [];
 let viewSelected = new Set(['all']);
@@ -652,27 +708,31 @@ function formatTime(val) { if (!val) return ''; const s = String(val).trim(); re
 function isToday(d) { const n = new Date(); return d.getFullYear()===n.getFullYear() && d.getMonth()===n.getMonth() && d.getDate()===n.getDate(); }
 function getViewFiltered() { if (viewSelected.has('all')) return allEvents; return allEvents.filter(e => viewSelected.has(e._member)); }
 
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    const m = tab.dataset.member;
-    if (m === 'all') { viewSelected = new Set(['all']); } else {
-      viewSelected.delete('all'); if (viewSelected.has(m)) { viewSelected.delete(m); if (viewSelected.size === 0) viewSelected = new Set(['all']); } else { viewSelected.add(m); }
-    }
-    document.querySelectorAll('.tab').forEach(t => { const tm = t.dataset.member; t.classList.toggle('active', tm === 'all' ? viewSelected.has('all') : viewSelected.has(tm)); });
-    renderSchedule();
+function setupViewTabs() {
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const m = tab.dataset.member;
+      if (m === 'all') { viewSelected = new Set(['all']); } else {
+        viewSelected.delete('all'); if (viewSelected.has(m)) { viewSelected.delete(m); if (viewSelected.size === 0) viewSelected = new Set(['all']); } else { viewSelected.add(m); }
+      }
+      document.querySelectorAll('.tab').forEach(t => { const tm = t.dataset.member; t.classList.toggle('active', tm === 'all' ? viewSelected.has('all') : viewSelected.has(tm)); });
+      renderSchedule();
+    });
   });
-});
+}
 
-document.querySelectorAll('.out-member-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const m = btn.dataset.member;
-    if (m === 'all') { outSelected = new Set(['all']); } else {
-      outSelected.delete('all'); if (outSelected.has(m)) { outSelected.delete(m); if (outSelected.size === 0) outSelected = new Set(['all']); } else { outSelected.add(m); }
-    }
-    document.querySelectorAll('.out-member-btn').forEach(b => { const bm = b.dataset.member; b.classList.toggle('active', bm === 'all' ? outSelected.has('all') : outSelected.has(bm)); });
-    document.getElementById('output-result').style.display = 'none';
+function setupOutButtons() {
+  document.querySelectorAll('.out-member-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const m = btn.dataset.member;
+      if (m === 'all') { outSelected = new Set(['all']); } else {
+        outSelected.delete('all'); if (outSelected.has(m)) { outSelected.delete(m); if (outSelected.size === 0) outSelected = new Set(['all']); } else { outSelected.add(m); }
+      }
+      document.querySelectorAll('.out-member-btn').forEach(b => { const bm = b.dataset.member; b.classList.toggle('active', bm === 'all' ? outSelected.has('all') : outSelected.has(bm)); });
+      document.getElementById('output-result').style.display = 'none';
+    });
   });
-});
+}
 
 function mergeCoAppearances(events) {
   const merged = [];
@@ -822,7 +882,7 @@ function renderCard(e, showMember) {
 function getOutFiltered() { if (outSelected.has('all')) return allEvents; return allEvents.filter(e => outSelected.has(e._member)); }
 
 function getOutLabel() {
-  if (outSelected.has('all')) return '加藤史帆・佐々木久美・齊藤京子・渡邉美穂・佐々木美玲';
+  if (outSelected.has('all')) return SHEETS.map(c => MEMBER_INFO[c].name).join('・');
   return [...outSelected].map(m => MEMBER_INFO[m]?.name || m).join('・');
 }
 
@@ -1152,6 +1212,9 @@ function closeCard(e) {
 
 async function init() {
   try {
+    // 先載入成員名單（決定有哪些頁籤和要讀哪些分頁），再抓行程
+    const members = await fetchMembers();
+    applyMembers(members);
     const [memberResults, annData, bdayData] = await Promise.all([
       Promise.all(SHEETS.map(fetchSheet)),
       fetchAnniversary(),
@@ -1206,11 +1269,6 @@ if ('serviceWorker' in navigator) {
         <div class="others-gen-title">
           <span class="others-gen-label">二期生</span>
           <div class="others-gen-line"></div>
-        </div>
-        <div class="others-member-row">
-          <div class="others-color-bar"><span style="background:#f39c12"></span><span style="background:#f39c12"></span></div>
-          <span class="others-member-name">丹生明里</span>
-          <a class="others-link" href="https://akarinibu.com/s/an/media/list?ima=0522&dy" target="_blank">官網行程 ↗</a>
         </div>
         <div class="others-member-row">
           <div class="others-color-bar"><span style="background:#ff6b9d"></span><span style="background:#7ec8a0"></span></div>
