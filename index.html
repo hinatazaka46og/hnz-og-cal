@@ -24,7 +24,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- QR Code 工具改為按「輸出圖卡」時才動態載入，加快首次開頁速度 -->
 
 <style>
 :root {
@@ -326,6 +326,19 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 }
 .footer-countdown-days { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
 
+/* 載入骨架屏：資料到達前先顯示版面輪廓 */
+.skeleton {
+  background: linear-gradient(90deg, #edf5fa 25%, #f9fdff 50%, #edf5fa 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-date { width: 150px; height: 20px; border-radius: 6px; margin: 32px 0 10px; }
+.skeleton-card { height: 88px; border-radius: var(--radius); margin-bottom: 10px; box-shadow: 0 1px 8px rgba(111,191,217,0.12); }
+
 @media (max-width: 580px) {
   .site-title { font-size: 17px; }
   .event-title { font-size: 14px; }
@@ -366,7 +379,11 @@ main { max-width: 860px; margin: 0 auto; padding: 28px 16px 80px; }
 
 <main>
   <div id="schedule-container">
-    <div class="loading">載入行程中...</div>
+    <div class="skeleton skeleton-date"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-date"></div>
+    <div class="skeleton skeleton-card"></div>
   </div>
 
   <div class="panel" id="panel-subscribe">
@@ -475,6 +492,16 @@ const SHEET_ID = '1G70fvNSynS6p2YBo_SNsU8w0tnU8SUAp3De21hRYMSQ';
 const SHEETS = ['MIHO','KUMI','SHIHO','KYOKO','MIPAN'];
 const WEEKDAYS = ['日','一','二','三','四','五','六'];
 
+/* 安全處理：試算表資料來自開放投稿，顯示前一律當純文字處理，防止惡意內容被當成程式執行 */
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+/* 連結只接受 http/https 開頭的正常網址 */
+function safeUrl(u) {
+  const s = String(u ?? '').trim();
+  return /^https?:\/\//i.test(s) ? s : '';
+}
+
 const MEMBER_INFO = {
   SHIHO: { name:'加藤史帆',   color:'#0234b3', light:'#e8eaf6', textColor:'#0234b3' },
   KUMI:  { name:'佐々木久美', color:'#800080', light:'#f5e5f5', textColor:'#800080' },
@@ -554,21 +581,21 @@ function getTodayBirthdays(date) {
 
 function renderAnniversaryBadges(anniversaries) {
   return anniversaries.map(a => {
-    const label = a.years ? `${a.name} ${a.years}周年` : a.name;
+    const label = a.years ? `${esc(a.name)} ${a.years}周年` : esc(a.name);
     return `<span class="anniversary-badge">${label}</span>`;
   }).join('');
 }
 
 function renderBirthdayBadges(birthdays) {
   return birthdays.map(b => {
-    const label = b.age ? `${b.name} ${b.age}歲生日` : `${b.name} 生日`;
+    const label = b.age ? `${esc(b.name)} ${b.age}歲生日` : `${esc(b.name)} 生日`;
     return `<span class="birthday-badge">🎂 ${label}</span>`;
   }).join('');
 }
 
 function renderAnniversaryCards(anniversaries) {
   return anniversaries.map(a => {
-    const label = a.years ? `${a.name} ${a.years}周年` : a.name;
+    const label = a.years ? `${esc(a.name)} ${a.years}周年` : esc(a.name);
     return `<div class="anniversary-card">
       <div class="anniversary-stripe"></div>
       <div class="anniversary-inner">
@@ -581,7 +608,7 @@ function renderAnniversaryCards(anniversaries) {
 
 function renderBirthdayCards(birthdays) {
   return birthdays.map(b => {
-    const label = b.age ? `${b.name} ${b.age}歲生日` : `${b.name} 生日`;
+    const label = b.age ? `${esc(b.name)} ${b.age}歲生日` : `${esc(b.name)} 生日`;
     return `<div class="birthday-card">
       <div class="birthday-stripe"></div>
       <div class="birthday-inner">
@@ -776,17 +803,18 @@ function renderCard(e, showMember) {
     }).join('');
   }
 
+  const linkUrl = safeUrl(e.url);
   return `<div class="event-card" data-member="${members[0]}">
     <div class="event-stripe" style="${stripeStyle}"></div>
     <div class="event-inner">
       <div class="event-meta">
         ${chipHtml}
-        ${e.category ? `<span class="event-category">${e.category}</span>` : ''}
-        ${timeStr ? `<span class="event-time">⏰ ${timeStr}</span>` : ''}
+        ${e.category ? `<span class="event-category">${esc(e.category)}</span>` : ''}
+        ${timeStr ? `<span class="event-time">⏰ ${esc(timeStr)}</span>` : ''}
       </div>
-      <div class="event-title">${e.title}</div>
-      ${e.note ? `<div class="event-note">📝 ${e.note}</div>` : ''}
-      ${e.url ? `<a class="event-link" href="${e.url}" target="_blank">🔗 ${e.url}</a>` : ''}
+      <div class="event-title">${esc(e.title)}</div>
+      ${e.note ? `<div class="event-note">📝 ${esc(e.note)}</div>` : ''}
+      ${linkUrl ? `<a class="event-link" href="${esc(linkUrl)}" target="_blank" rel="noopener">🔗 ${esc(linkUrl)}</a>` : ''}
     </div>
   </div>`;
 }
@@ -890,13 +918,30 @@ function generateTextOutput() {
 function copyOutput() { const text = document.getElementById('output-text').textContent; navigator.clipboard.writeText(text).then(() => { const btn = document.querySelector('.copy-btn'); btn.textContent = '已複製 ✓'; setTimeout(() => btn.textContent = '複製', 2000); }); }
 
 let qrImageEl = null;
+let qrLibPromise = null;
+
+function loadQRLib() {
+  if (window.QRCode) return Promise.resolve();
+  if (!qrLibPromise) {
+    qrLibPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      s.onload = resolve;
+      s.onerror = () => { qrLibPromise = null; reject(new Error('QR lib load failed')); };
+      document.head.appendChild(s);
+    });
+  }
+  return qrLibPromise;
+}
 
 function getQRImage(cb) {
   if (qrImageEl) { cb(qrImageEl); return; }
-  const div = document.getElementById('qr-tmp');
-  div.innerHTML = '';
-  new QRCode(div, { text: SITE_URL, width: 128, height: 128, colorDark: '#1a2a3a', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
-  setTimeout(() => { qrImageEl = div.querySelector('canvas') || div.querySelector('img'); cb(qrImageEl); }, 400);
+  loadQRLib().then(() => {
+    const div = document.getElementById('qr-tmp');
+    div.innerHTML = '';
+    new QRCode(div, { text: SITE_URL, width: 128, height: 128, colorDark: '#1a2a3a', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    setTimeout(() => { qrImageEl = div.querySelector('canvas') || div.querySelector('img'); cb(qrImageEl); }, 400);
+  }).catch(() => cb(null));
 }
 
 function generateCardOutput() {
@@ -906,11 +951,29 @@ function generateCardOutput() {
   getQRImage(qrEl => drawCard(merged, qrEl));
 }
 
+/* 圖卡標題換行：太長的活動名切成兩行，第二行仍放不下才加「…」 */
+function splitTitleLines(mctx, title, maxW) {
+  mctx.font = 'bold 14px sans-serif';
+  if (mctx.measureText(title).width <= maxW) return [title];
+  let line1 = title;
+  while (line1.length > 1 && mctx.measureText(line1).width > maxW) line1 = line1.slice(0, -1);
+  let line2 = title.slice(line1.length);
+  if (mctx.measureText(line2).width > maxW) {
+    while (line2.length > 1 && mctx.measureText(line2 + '…').width > maxW) line2 = line2.slice(0, -1);
+    line2 += '…';
+  }
+  return [line1, line2];
+}
+
 function drawCard(inRange, qrEl) {
   const canvas = document.getElementById('schedule-canvas');
   const W = 750, PAD = 44;
-  const BAND_H = 7, HEADER_H = 112, ROW_H = 72, FOOTER_H = 84;
-  const H = BAND_H + HEADER_H + inRange.length * ROW_H + FOOTER_H;
+  const BAND_H = 7, HEADER_H = 112, ROW_H = 72, ROW_H2 = 92, FOOTER_H = 84;
+  const maxTitleW = W - PAD*2 - 20;
+  const mctx = document.createElement('canvas').getContext('2d');
+  const titleLines = inRange.map(e => splitTitleLines(mctx, String(e.title ?? ''), maxTitleW));
+  const rowHeights = titleLines.map(lines => lines.length > 1 ? ROW_H2 : ROW_H);
+  const H = BAND_H + HEADER_H + rowHeights.reduce((a, b) => a + b, 0) + FOOTER_H;
 
   const SCALE = 2;
   canvas.width = W * SCALE; canvas.height = H * SCALE;
@@ -955,21 +1018,24 @@ function drawCard(inRange, qrEl) {
   ctx.beginPath(); ctx.moveTo(PAD, Y0+86); ctx.lineTo(W-PAD, Y0+86); ctx.stroke();
 
   let lastDate = '';
+  let rowY = Y0 + HEADER_H;
   inRange.forEach((e, i) => {
-    const y = Y0 + HEADER_H + i * ROW_H;
+    const y = rowY;
+    const rowH = rowHeights[i];
+    const lines = titleLines[i];
     const members = e._members || [e._member];
     const info = MEMBER_INFO[members[0]];
 
     if (i % 2 === 0) {
       ctx.fillStyle = 'rgba(255,255,255,0.42)';
       ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(PAD-12, y+2, W-PAD*2+24, ROW_H-4, 8);
-      else ctx.rect(PAD-12, y+2, W-PAD*2+24, ROW_H-4);
+      if (ctx.roundRect) ctx.roundRect(PAD-12, y+2, W-PAD*2+24, rowH-4, 8);
+      else ctx.rect(PAD-12, y+2, W-PAD*2+24, rowH-4);
       ctx.fill();
     }
 
     if (members.length > 1) {
-      const stripeH = ROW_H - 10;
+      const stripeH = rowH - 10;
       const segH = stripeH / members.length;
       members.forEach((m, mi) => {
         ctx.fillStyle = MEMBER_INFO[m].color;
@@ -978,8 +1044,8 @@ function drawCard(inRange, qrEl) {
     } else {
       ctx.fillStyle = info.color;
       ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(PAD-12, y+5, 4, ROW_H-10, 2);
-      else ctx.rect(PAD-12, y+5, 4, ROW_H-10);
+      if (ctx.roundRect) ctx.roundRect(PAD-12, y+5, 4, rowH-10, 2);
+      else ctx.rect(PAD-12, y+5, 4, rowH-10);
       ctx.fill();
     }
 
@@ -1040,23 +1106,23 @@ function drawCard(inRange, qrEl) {
     }
 
     ctx.fillStyle = '#1a2a3a'; ctx.font = 'bold 14px sans-serif';
-    let title = e.title;
-    const maxW = W - PAD*2 - 20;
-    while (title.length > 0 && ctx.measureText(title).width > maxW) title = title.slice(0,-1);
-    if (title !== e.title) title += '…';
-    ctx.fillText(title, PAD, y+55);
+    ctx.fillText(lines[0], PAD, y+55);
+    if (lines.length > 1) ctx.fillText(lines[1], PAD, y+75);
+    const lastLine = lines[lines.length - 1];
+    const lastLineY = lines.length > 1 ? y+75 : y+55;
 
     if (e.note) {
-      const titleW = ctx.measureText(title).width;
+      const titleW = ctx.measureText(lastLine).width;
       ctx.fillStyle = '#8aaabb'; ctx.font = '11px sans-serif';
       let note = `（${e.note}）`;
-      const avail = maxW - titleW - 10;
+      const avail = maxTitleW - titleW - 10;
       while (note.length > 2 && ctx.measureText(note).width > avail) note = note.slice(0,-1);
-      if (note.length > 2) ctx.fillText(note, PAD+titleW+6, y+55);
+      if (note.length > 2) ctx.fillText(note, PAD+titleW+6, lastLineY);
     }
+    rowY += rowH;
   });
 
-  const footerY = Y0 + HEADER_H + inRange.length * ROW_H;
+  const footerY = rowY;
   ctx.strokeStyle = '#c0dcea'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(PAD, footerY+12); ctx.lineTo(W-PAD, footerY+12); ctx.stroke();
 
@@ -1100,6 +1166,13 @@ async function init() {
   }
 }
 init();
+
+/* 離線支援：註冊 Service Worker（sw.js），沒網路時顯示最後一次載入的行程 */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 
 <div class="others-overlay" id="others-overlay" onclick="closeOthers(event)">
