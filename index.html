@@ -489,7 +489,7 @@ let MEMBER_INFO = {}; // 由 applyMembers() 依 MEMBERS 分頁內容填入
 
 /* 讀取 MEMBERS 分頁；失敗或空白時退回內建名單 */
 async function fetchMembers() {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=MEMBERS`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=MEMBERS`;
   try {
     const res = await fetch(url);
     const text = await res.text();
@@ -584,7 +584,7 @@ let anniversaryData = [];
 let birthdayData = [];
 
 async function fetchAnniversary() {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=ANNIVERSARY`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=ANNIVERSARY`;
   try {
     const res = await fetch(url);
     const text = await res.text();
@@ -600,7 +600,7 @@ async function fetchAnniversary() {
 }
 
 async function fetchBirthday() {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=BIRTHDAY`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=BIRTHDAY`;
   try {
     const res = await fetch(url);
     const text = await res.text();
@@ -676,7 +676,7 @@ function renderBirthdayCards(birthdays) {
 }
 
 async function fetchSheet(sheetName) {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=${sheetName}`;
   try {
     const res = await fetch(url); const text = await res.text();
     const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
